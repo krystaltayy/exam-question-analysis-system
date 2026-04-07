@@ -2,18 +2,22 @@
 <html>
 <head>
     <title>Bloom Analyzer</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<h1>Bloom Taxonomy Analyzer</h1>
+<h1>Rule-Based Web Examination Question Analysis System Using Bloom’s Taxonomy</h1>
+<p class="subtitle">Enter your question to analyze</p>
 
-<textarea id="question" placeholder="Type your question here..."></textarea>
-<br><br>
+<div class="container">
+    <textarea id="question" placeholder="What do you want to analyze?"></textarea>
 
-<button onclick="showResult()">Analyze</button>
+    <button onclick="showResult()">Analyze question</button>
 
-<p id="result"></p>
+    <p id="result"></p>
+</div>
 
 <script>
 function showResult() {
