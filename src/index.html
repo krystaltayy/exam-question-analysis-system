@@ -1,29 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Bloom Analyzer</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="bloomtaxanomy.jpg" alt="Bloom Analyzer Logo">
+        </div>
 
-<h1>Rule-Based Web Examination Question Analysis System Using Bloom’s Taxonomy</h1>
-<p class="subtitle">Enter your question to analyze</p>
+        <div class="nav-links">
+            <a href="#">Learn</a>
+            <a href="#">Analyzer</a>
+        </div>
 
-<div class="container">
-    <textarea id="question" placeholder="What do you want to analyze?"></textarea>
+        <div class="nav-buttons">
+            <button class="btn-signin">Log in</button>
+            <button class="btn-signup">Sign up</button>
+        </div>
+    </nav>
 
-    <button onclick="showResult()">Analyze question</button>
+    <!-- MAIN ANALYZER SECTION -->
+    <div id="analyzer">
+        <h1>
+            Rule-Based Web Examination Question Analysis System Using Bloom’s Taxonomy
+        </h1>
 
-    <p id="result"></p>
-</div>
+        <div class="container">
+            <p class="subtitle">What do you want to analyze?</p>
+            <textarea id="question" placeholder="Your Academic Question"></textarea>
 
-<script>
-function showResult() {
-    document.getElementById("result").innerText = "Bloom Level: Analyze";
-}
-</script>
+            <button onclick="showResult()">Analyze question</button>
 
+            <p id="result"></p>
+        </div>
+    </div>
+
+    <!-- SCROLL DOWN SECTION -->
+    <section class="bloom-info">
+        <div class="info-text">
+            <h2>What is Bloom’s Taxonomy?</h2>
+            <p>
+                Bloom’s Taxonomy is a framework that categorizes different
+                levels of learning, starting from remembering and understanding,
+                then moving up to higher-order thinking skills such as analyzing,
+                evaluating, and creating.
+            </p>
+        </div>
+
+        <div class="info-image">
+            <img src="bloompyramid2.png" alt="Bloom Taxonomy Pyramid">
+        </div>
+    </section>
+
+    <script>
+        function showResult() {
+            document.getElementById("result").innerText = "Bloom Level: Analyze";
+        }
+    </script>
 </body>
 </html>
