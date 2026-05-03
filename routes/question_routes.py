@@ -4,9 +4,15 @@ from services.bloom_service import classify_question
 
 @app.route("/analyze", methods=["POST"])
 def analyze_question():
+
     question = request.form.get("question")
     q_type = request.form.get("type")
 
     level = classify_question(question)
 
-    return render_template("result.html", question=question, level=level)
+    return render_template(
+        "result.html",
+        question=question,
+        level=level,
+        q_type=q_type
+    )
