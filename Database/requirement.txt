@@ -1,0 +1,21 @@
+Data entities required for the Question Analysis System
+User Entity: 
+1.	Username
+2.	Email
+3.	Password (hashed)
+4.	Role (Lecturer/Admin)
+
+Question Entity:
+1.	Question Text
+2.	Type (MCQ/Structured/Essay)
+3.	Bloom's Level (Remember, Understand, Apply, Analyze, Evaluate, Create)
+4.	Keywords detection
+5.	Timestamp.
+6.	Auto-marking for MCQ
+
+Analysis Report Entity: 
+1.	Lecturer ID
+2.	Date Generated
+3.	Score Distribution
+4.	A Group’s Average Score
+5.	Show the Group’s Correct and Wrong Answers as a whole
