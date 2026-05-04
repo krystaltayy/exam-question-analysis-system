@@ -12,18 +12,25 @@
 <p class="subtitle">Enter your question to analyze</p>
 
 <div class="container">
-    <textarea id="question" placeholder="What do you want to analyze?"></textarea>
 
-    <button onclick="showResult()">Analyze question</button>
+    <form action="/analyze" method="POST">
 
-    <p id="result"></p>
+        <textarea
+            name="question"
+            placeholder="What do you want to analyze?"
+        ></textarea>
+
+        <select name="type">
+            <option value="MCQ">MCQ</option>
+            <option value="Essay">Essay</option>
+            <option value="Structured">Structured</option>
+        </select>
+
+        <button type="submit">Analyze Question</button>
+
+    </form>
+
 </div>
-
-<script>
-function showResult() {
-    document.getElementById("result").innerText = "Bloom Level: Analyze";
-}
-</script>
 
 </body>
 </html>
