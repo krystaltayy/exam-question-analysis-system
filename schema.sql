@@ -49,3 +49,21 @@ CREATE TABLE questions (
     FOREIGN KEY (lecturer_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (bloom_level_id) REFERENCES blooms_levels (level_id)
 );
+
+SELECT 
+    q.id AS question_id,
+    q.question_text, 
+    b.level_name AS blooms_category,
+    q.created_at
+FROM questions q
+INNER JOIN blooms_levels b ON q.bloom_level_id = b.level_id
+WHERE q.lecturer_id = ?
+ORDER BY q.created_at DESC;
+
+SELECT 
+    b.level_name AS blooms_category,
+    COUNT(q.id) AS question_count
+FROM blooms_levels b
+LEFT JOIN questions q ON b.level_id = q.bloom_level_id AND q.lecturer_id = ?
+GROUP BY b.level_id, b.level_name
+ORDER BY b.level_id ASC;
