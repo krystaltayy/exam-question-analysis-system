@@ -1,7 +1,9 @@
 DROP TABLE IF EXISTS posts;
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS mcq_options;
+DROP TABLE IF EXISTS essay_details;
 DROP TABLE IF EXISTS questions;
 DROP TABLE IF EXISTS blooms_levels;
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS question_group_mapping;
 DROP TABLE IF EXISTS custom_groups;
 
@@ -49,6 +51,24 @@ CREATE TABLE questions (
     -- Foreign Key Constraints
     FOREIGN KEY (lecturer_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (bloom_level_id) REFERENCES blooms_levels (level_id)
+);
+
+CREATE TABLE mcq_options (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    question_id INTEGER NOT NULL,
+    option_text TEXT NOT NULL,
+    is_correct BOOLEAN NOT NULL,
+    
+    -- Foreign Key Constraint to link options to questions
+    FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE
+);
+
+CREATE TABLE essay_details (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    question_id INTEGER NOT NULL UNIQUE, -- UNIQUE ensures only one rubric per essay
+    marking_rubric TEXT,                 -- What the lecturer looks for
+    suggested_word_count INTEGER,
+    FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE
 );
 
 -- Table 1: Stores the actual groups created by the lecturer

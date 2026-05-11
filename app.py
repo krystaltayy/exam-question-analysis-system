@@ -1,6 +1,7 @@
-from flask import Flask, request, jsonify  # type: ignore[import]
+from flask import Flask, request, jsonify, render_template, redirect, url_for, flash  # type: ignore[import]
 import math # Needed for pagination
 import db
+import sqlite3
 
 app = Flask(__name__)
 db.init_app(app)
@@ -177,6 +178,56 @@ def get_group_questions(group_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# --- MOVED TO THE BOTTOM! ---
+@app.route('/edit_question/<int:question_id>', methods=('GET', 'POST'))
+def edit_question(question_id):
+    conn = get_db_connection()
+    
+    # 1. Fetch the existing question to pre-fill the form
+    question = conn.execute('SELECT * FROM questions WHERE id = ?', (question_id,)).fetchone()
+
+    if request.method == 'POST':
+        # 2. Grab the updated data from the form submission
+        updated_content = request.form['content']
+        updated_bloom = request.form['bloom_level']
+        updated_type = request.form['question_type'] # e.g., MCQ or Essay
+
+        # 3. Execute the UPDATE statement
+        conn.execute('''
+            UPDATE questions 
+            SET content = ?, bloom_level = ?, question_type = ?
+            WHERE id = ?
+        ''', (updated_content, updated_bloom, updated_type, question_id))
+        
+        conn.commit()
+        conn.close()
+        
+        # Redirect the lecturer back to the dashboard or question list
+        return redirect(url_for('dashboard'))
+
+    conn.close()
+    
+    # Render the edit template, passing the existing question data to it
+    return render_template('edit_question.html', question=question)
+
+@app.route('/delete_question/<int:question_id>', methods=('POST',))
+def delete_question(question_id):
+    conn = get_db_connection()
+    
+    # Execute the DELETE statement
+    conn.execute('DELETE FROM questions WHERE id = ?', (question_id,))
+    conn.commit()
+    conn.close()
+    
+    return redirect(url_for('dashboard'))
+
+def get_db_connection():
+    conn = sqlite3.connect('questions.db')
+    conn.row_factory = sqlite3.Row
+    
+    # Force SQLite to enforce foreign key constraints
+    conn.execute('PRAGMA foreign_keys = ON;')
+    
+    return conn
+
 if __name__ == "__main__":
     app.run(debug=True)
