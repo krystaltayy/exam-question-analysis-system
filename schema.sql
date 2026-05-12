@@ -94,3 +94,36 @@ CREATE TABLE question_group_mapping (
     FOREIGN KEY (group_id) REFERENCES custom_groups (id) ON DELETE CASCADE,
     FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE
 );
+
+-- 1. The Dictionary: Stores all the action verbs used by the algorithm
+CREATE TABLE bloom_verbs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    verb TEXT NOT NULL UNIQUE,          -- e.g., 'evaluate', 'design', 'list'
+    bloom_level_id INTEGER NOT NULL,    -- Maps the verb to its cognitive level
+    
+    FOREIGN KEY (bloom_level_id) REFERENCES blooms_levels (level_id) ON DELETE CASCADE
+-- Remembering (Level 1)
+INSERT INTO bloom_verbs (verb, bloom_level_id) VALUES ('list', 1), ('define', 1), ('name', 1), ('state', 1), ('identify', 1), ('label', 1);
+-- Understanding (Level 2)
+INSERT INTO bloom_verbs (verb, bloom_level_id) VALUES ('explain', 2), ('summarize', 2), ('interpret', 2), ('classify', 2), ('compare', 2), ('contrast', 2), ('describe', 2);
+-- Applying (Level 3)
+INSERT INTO bloom_verbs (verb, bloom_level_id) VALUES ('apply', 3), ('use', 3), ('demonstrate', 3), ('solve', 3), ('implement', 3), ('execute', 3), ('interpret', 3);
+-- Analyzing (Level 4)
+INSERT INTO bloom_verbs (verb, bloom_level_id) VALUES ('analyze', 4), ('differentiate', 4), ('organize', 4), ('attribute', 4), ('deconstruct', 4), ('relate', 4), ('examine', 4), ('distinguish', 4);
+-- Evaluating (Level 5)
+INSERT INTO bloom_verbs (verb, bloom_level_id) VALUES ('evaluate', 5), ('judge', 5), ('critique', 5), ('justify', 5), ('defend', 5), ('appraise', 5), ('assess', 5), ('argue', 5), ('recommend', 5);
+-- Creating (Level 6)
+INSERT INTO bloom_verbs (verb, bloom_level_id) VALUES ('design', 6), ('construct', 6),( 'develop', 6), ('formulate', 6), ('assemble', 6), ('generate', 6), ('plan', 6), ('produce', 6), ('invent', 6);
+);
+
+-- 2. The Log: Stores the results when the algorithm runs
+CREATE TABLE question_analysis_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    question_id INTEGER NOT NULL,
+    verb_id INTEGER NOT NULL,           -- The specific verb that triggered the match
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- If a question or a verb gets deleted, clear the log history too
+    FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE,
+    FOREIGN KEY (verb_id) REFERENCES bloom_verbs (id) ON DELETE CASCADE
+);
