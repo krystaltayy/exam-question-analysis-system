@@ -80,13 +80,23 @@ def get_lecturer_dashboard(lecturer_id):
     """
     
     stats_sql = """
-        SELECT 
-            b.level_name AS blooms_category,
-            COUNT(q.id) AS question_count
-        FROM blooms_levels b
-        LEFT JOIN questions q ON b.level_id = q.bloom_level_id AND q.lecturer_id = ?
-        GROUP BY b.level_id, b.level_name
-        ORDER BY b.level_id ASC;
+       WITH TotalQuestions AS (
+    SELECT COUNT(id) as total_count 
+    FROM questions 
+    WHERE lecturer_id = ?
+)
+SELECT 
+    b.level_name AS blooms_category,
+    COUNT(q.id) AS question_count,
+    CASE 
+        WHEN (SELECT total_count FROM TotalQuestions) > 0 
+        THEN ROUND((COUNT(q.id) * 100.0) / (SELECT total_count FROM TotalQuestions), 1)
+        ELSE 0 
+    END AS percentage
+FROM blooms_levels b
+LEFT JOIN questions q ON b.level_id = q.bloom_level_id AND q.lecturer_id = ?
+GROUP BY b.level_id, b.level_name
+ORDER BY b.level_id ASC;
     """
     
     try:

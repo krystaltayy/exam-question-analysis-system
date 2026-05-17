@@ -46,9 +46,12 @@ CREATE TABLE questions (
     lecturer_id INTEGER NOT NULL,
     bloom_level_id INTEGER NOT NULL,
     question_text TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
-    -- Foreign Key Constraints
+    -- NEW COLUMNS ADDED HERE:
+    question_type TEXT NOT NULL DEFAULT 'MCQ', -- e.g., 'MCQ', 'Essay', 'Case Study', 'Structured'
+    file_path TEXT,                            -- Stores the folder path where the backend saves the attached file
+    
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (lecturer_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (bloom_level_id) REFERENCES blooms_levels (level_id)
 );
@@ -67,7 +70,7 @@ CREATE TABLE essay_details (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     question_id INTEGER NOT NULL UNIQUE, -- UNIQUE ensures only one rubric per essay
     marking_rubric TEXT,                 -- What the lecturer looks for
-    suggested_word_count INTEGER,
+    suggested_word_count INTEGER, 
     FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE
 );
 
@@ -98,8 +101,8 @@ CREATE TABLE question_group_mapping (
 -- 1. The Dictionary: Stores all the action verbs used by the algorithm
 CREATE TABLE bloom_verbs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    verb TEXT NOT NULL UNIQUE,          -- e.g., 'evaluate', 'design', 'list'
-    bloom_level_id INTEGER NOT NULL,    -- Maps the verb to its cognitive level
+    verb TEXT NOT NULL UNIQUE,          
+    bloom_level_id INTEGER NOT NULL,    
     
     FOREIGN KEY (bloom_level_id) REFERENCES blooms_levels (level_id) ON DELETE CASCADE
 -- Remembering (Level 1)
@@ -116,14 +119,12 @@ INSERT INTO bloom_verbs (verb, bloom_level_id) VALUES ('evaluate', 5), ('judge',
 INSERT INTO bloom_verbs (verb, bloom_level_id) VALUES ('design', 6), ('construct', 6),( 'develop', 6), ('formulate', 6), ('assemble', 6), ('generate', 6), ('plan', 6), ('produce', 6), ('invent', 6);
 );
 
--- 2. The Log: Stores the results when the algorithm runs
 CREATE TABLE question_analysis_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     question_id INTEGER NOT NULL,
-    verb_id INTEGER NOT NULL,           -- The specific verb that triggered the match
+    verb_id INTEGER NOT NULL,           
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
-    -- If a question or a verb gets deleted, clear the log history too
     FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE,
     FOREIGN KEY (verb_id) REFERENCES bloom_verbs (id) ON DELETE CASCADE
 );
