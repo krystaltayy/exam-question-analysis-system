@@ -9,9 +9,18 @@ from Database.db import get_db_connection
 def analyze_question():
 
     question = request.form.get("question")
-    q_type = request.form.get("type")
+    # validate question length
+    word_count = len(question.split())
 
-    print("DEBUG QUESTION:", question)
+    if word_count < 2:
+
+      error = "Please enter a complete question (at least 2 words)."
+
+      return render_template(
+        "home.html",
+        error=error
+    )
+    q_type = request.form.get("type")
 
     # 1. classify first
     level = classify_question(question)
@@ -38,17 +47,11 @@ def analyze_question():
     conn.close()
 
     # 4. show result on SAME PAGE
-    result = f"{level}"
-    print("RESULT SENT TO HTML:", result)
+    result = level
+   
 
     return render_template("home.html", result=result, question=question)
 
-    return render_template(
-        "result.html",
-        question=question,
-        level=level,
-        q_type=q_type
-    )
 
 @app.route("/questions")
 def view_questions():
@@ -66,5 +69,5 @@ def view_questions():
         questions=questions
     )
 
-print(app.url_map)
+
       
