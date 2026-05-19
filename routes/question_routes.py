@@ -16,8 +16,8 @@ def analyze_question():
         level = "No level detected"
 
     return render_template(
-        "index2.html",
-        question=question,
-        level=level,
-        q_type=q_type
-    )
+    "dashboard.html",
+    question=question,
+    level=level,
+    q_type=q_type
+)

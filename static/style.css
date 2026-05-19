@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;800;900&display=swap');
 
 body {
@@ -5,12 +6,12 @@ body {
     font-family: 'Poppins', sans-serif;
 
     background-image: url("/static/school.jpg");
-    background-size: cover;          /* fills screen properly */
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-/* ===== NAVBAR (THINNER) ===== */
+/* ===== NAVBAR ===== */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -21,7 +22,7 @@ body {
 }
 
 .logo img {
-    height: 70px;   /* balanced size */
+    height: 70px;
     width: auto;
 }
 
@@ -59,7 +60,7 @@ body {
 /* ===== HERO TITLE ===== */
 h1 {
     max-width: 1100px;
-    margin: 50px auto 10px;   /* FIXED spacing */
+    margin: 50px auto 10px;
     font-size: 40px;
     font-weight: 900;
     line-height: 1.1;
@@ -78,24 +79,57 @@ h1 {
 
 /* ===== MAIN CARD ===== */
 .container {
-    margin: 50px auto;   /* FIXED gap */
+    margin: 50px auto;
     width: 550px;
-    background: rgba(255, 255, 255, 0.95);  /* slight transparency */
+    background: rgba(255, 255, 255, 0.95);
     padding: 30px;
     border-radius: 25px;
     box-shadow: 0 15px 40px rgba(0,0,0,0.1);
 }
 
-/* INPUT */
+/* INPUT WRAPPER */
+.input-wrapper {
+    position: relative;
+}
+
+/* TEXTAREA */
 textarea {
     width: 100%;
-    height: 150px;
+    height: 160px;
     border: 1px solid #ddd;
-    border-radius: 12px;
-    padding: 12px;
+    border-radius: 18px;
+    padding: 15px;
+    padding-right: 70px;
     font-size: 14px;
     resize: none;
     box-sizing: border-box;
+}
+
+/* HIDE FILE INPUT */
+input[type="file"] {
+    display: none;
+}
+
+/* PLUS BUTTON */
+.upload-btn {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+
+    width: 42px;
+    height: 42px;
+
+    background: black;
+    color: white;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 28px;
+    cursor: pointer;
 }
 
 /* BUTTON */
@@ -158,4 +192,25 @@ button:hover {
 .info-image img {
     width: 100%;
     border-radius: 20px;
+}
+
+.dashboard{
+    margin-top:50px;
+    text-align:center;
+}
+
+.charts-container{
+    display:flex;
+    justify-content:center;
+    gap:30px;
+    flex-wrap:wrap;
+    margin-top:30px;
+}
+
+.chart-box{
+    width:300px;
+    background:white;
+    padding:20px;
+    border-radius:20px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }

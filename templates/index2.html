@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,14 +26,32 @@
     </div>
 
 </div>
+
 <h1>Rule-Based Web Examination Question Analysis System Using Bloom’s Taxonomy</h1>
 
 <div class="container">
-    <p class="subtitle">Enter your question to analyze</p>
 
-    <form action="/analyze" method="POST">
-        <textarea name="question" placeholder="What do you want to analyze?" required></textarea>
-        <button type="submit">Analyze question</button>
+    <p class="subtitle">Enter Your Question to Analyze</p>
+
+    <form action="/analyze" method="POST" enctype="multipart/form-data">
+
+        <div class="input-wrapper">
+
+            <textarea 
+                name="question" 
+                placeholder="What do you want to analyze?" 
+                required></textarea>
+
+            <!-- PLUS BUTTON -->
+            <label for="pdfUpload" class="upload-btn">+</label>
+
+            <!-- HIDDEN FILE INPUT -->
+            <input type="file" id="pdfUpload" name="pdf_file">
+
+        </div>
+
+        <button type="submit">Analyze Question</button>
+
     </form>
 
     <div id="result">
@@ -40,11 +59,10 @@
         <p><strong>Bloom Level:</strong> {{ level }}</p>
         <p><strong>Type:</strong> {{ q_type }}</p>
     </div>
-</div>
 
 </div>
 
-<!-- ✅ BLOOM TAXONOMY SECTION -->
+<!-- BLOOM TAXONOMY SECTION -->
 <div class="bloom-info">
 
     <div class="info-text">

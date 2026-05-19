@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Dashboard</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <h1>Dashboard</h1>
+
+    <div class="result-box">
+
+        <p><strong>Question:</strong> {{ question }}</p>
+
+        <p><strong>Bloom Level:</strong> {{ level }}</p>
+
+        <p><strong>Type:</strong> {{ q_type }}</p>
+
+    </div>
+
+    <div class="charts-container">
+
+        <div class="chart-box">
+            <h3>C1 Keywords</h3>
+            <canvas id="chart1"></canvas>
+        </div>
+
+        <div class="chart-box">
+            <h3>C2 Keywords</h3>
+            <canvas id="chart2"></canvas>
+        </div>
+
+        <div class="chart-box">
+            <h3>Overall Classification</h3>
+            <canvas id="chart3"></canvas>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const ctx1 = document.getElementById('chart1');
+
+new Chart(ctx1, {
+    type: 'pie',
+    data: {
+        labels: ['Define', 'List', 'State'],
+        datasets: [{
+            data: [12, 8, 5]
+        }]
+    }
+});
+
+const ctx2 = document.getElementById('chart2');
+
+new Chart(ctx2, {
+    type: 'pie',
+    data: {
+        labels: ['Explain', 'Describe', 'Compare'],
+        datasets: [{
+            data: [15, 10, 7]
+        }]
+    }
+});
+
+const ctx3 = document.getElementById('chart3');
+
+new Chart(ctx3, {
+    type: 'pie',
+    data: {
+        labels: ['C1', 'C2'],
+        datasets: [{
+            data: [40, 60]
+        }]
+    }
+});
+
+</script>
+
+</body>
+</html>
