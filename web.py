@@ -6,6 +6,10 @@ app = Flask(__name__)
 def home():
     return render_template("index2.html")
 
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
+
 from routes.question_routes import *
 
 if __name__ == "__main__":

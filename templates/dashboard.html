@@ -18,23 +18,28 @@
 
     <div class="result-box">
 
-        <p><strong>Question:</strong> {{ question }}</p>
+        <div class="result-left">
+            <p><strong>📄 Filename:</strong> {{ question }}</p>
+            <p><strong>🟠 C1 - Remember:</strong> {{ c1_percent | default('60') }}%</p>
+            <p><strong>🔵 C2 - Understand:</strong> {{ c2_percent | default('40') }}%</p>
+        </div>
 
-        <p><strong>Bloom Level:</strong> {{ level }}</p>
-
-        <p><strong>Type:</strong> {{ q_type }}</p>
+        <div class="result-right">
+            <p><strong>🎯 Bloom Level:</strong> {{ level }}</p>
+            <p><strong>🕐 Date Analyzed:</strong> <span id="datetime"></span></p>
+        </div>
 
     </div>
 
     <div class="charts-container">
 
         <div class="chart-box">
-            <h3>C1 Keywords</h3>
+            <h3>Cognitive 1 - Remember</h3>
             <canvas id="chart1"></canvas>
         </div>
 
         <div class="chart-box">
-            <h3>C2 Keywords</h3>
+            <h3>Cognitive 2 - Understand</h3>
             <canvas id="chart2"></canvas>
         </div>
 
@@ -49,6 +54,14 @@
 
 <script>
 
+// DATE & TIME
+const now = new Date();
+const options = { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+document.getElementById('datetime').textContent = now.toLocaleString('en-GB', options);
+
+const c1 = {{ c1_percent | default(60) }};
+const c2 = {{ c2_percent | default(40) }};
+
 const ctx1 = document.getElementById('chart1');
 
 new Chart(ctx1, {
@@ -56,7 +69,8 @@ new Chart(ctx1, {
     data: {
         labels: ['Define', 'List', 'State'],
         datasets: [{
-            data: [12, 8, 5]
+            data: [10, 20, 30],
+            backgroundColor: ['#ff9f43', '#feca57', '#ff6b6b']
         }]
     }
 });
@@ -66,9 +80,10 @@ const ctx2 = document.getElementById('chart2');
 new Chart(ctx2, {
     type: 'pie',
     data: {
-        labels: ['Explain', 'Describe', 'Compare'],
+        labels: ['Explain', 'Summarize', 'Describe'],
         datasets: [{
-            data: [15, 10, 7]
+            data: [15, 25, 35],
+            backgroundColor: ['#48dbfb', '#0abde3', '#1dd1a1']
         }]
     }
 });
@@ -80,7 +95,8 @@ new Chart(ctx3, {
     data: {
         labels: ['C1', 'C2'],
         datasets: [{
-            data: [40, 60]
+            data: [c1, c2],
+            backgroundColor: ['#ff9f43', '#48dbfb']
         }]
     }
 });

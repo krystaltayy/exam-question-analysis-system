@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,25 +8,21 @@
 <body>
 <!-- NAVBAR -->
 <div class="navbar">
-
     <div class="logo">
         <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo">
     </div>
-
     <div class="nav-links">
         <a href="#">Home</a>
         <a href="#">About</a>
-        <a href="#">Analyzer</a>
+        <a href="#">History</a>
     </div>
-
     <div class="nav-buttons">
         <button>Log In</button>
         <button>Sign Up</button>
     </div>
-
 </div>
 
-<h1>Rule-Based Web Examination Question Analysis System Using Bloom’s Taxonomy</h1>
+<h1>Rule-Based Web Examination Question Analysis System Using Bloom's Taxonomy</h1>
 
 <div class="container">
 
@@ -35,50 +30,98 @@
 
     <form action="/analyze" method="POST" enctype="multipart/form-data">
 
-        <div class="input-wrapper">
+        <div class="input-box">
 
-            <textarea 
-                name="question" 
-                placeholder="What do you want to analyze?" 
-                required></textarea>
+            <!-- FILE PREVIEW CARD (shown when file selected) -->
+            <div id="filePreview" style="display:none;">
+                <div class="file-card">
+                    <div class="file-card-info">
+                        <p id="fileName">filename.docx</p>
+                        <p id="fileSize" class="file-meta">0 KB</p>
+                    </div>
+                    <span id="fileType" class="file-badge">DOCX</span>
+                    <button type="button" id="removeFile">✕</button>
+                </div>
+            </div>
 
-            <!-- PLUS BUTTON -->
-            <label for="pdfUpload" class="upload-btn">+</label>
+            <!-- TEXTAREA -->
+            <textarea
+                id="questionBox"
+                name="question"
+                placeholder="What do you want to analyze?"></textarea>
 
-            <!-- HIDDEN FILE INPUT -->
-            <input type="file" id="pdfUpload" name="pdf_file">
+            <!-- BOTTOM BAR -->
+            <div class="input-bottom">
+                <label for="pdfUpload" class="upload-btn">+</label>
+                <input type="file" id="pdfUpload" name="file" accept=".pdf,.txt,.docx">
+                <button type="submit" class="send-btn">➤</button>
+            </div>
 
         </div>
 
-        <button type="submit">Analyze Question</button>
-
     </form>
 
+    <!-- RESULT -->
+    {% if question and q_type == "General" %}
     <div id="result">
         <p><strong>Question:</strong> {{ question }}</p>
         <p><strong>Bloom Level:</strong> {{ level }}</p>
         <p><strong>Type:</strong> {{ q_type }}</p>
     </div>
+    {% endif %}
 
 </div>
 
 <!-- BLOOM TAXONOMY SECTION -->
 <div class="bloom-info">
-
     <div class="info-text">
-        <h2>What is Bloom’s Taxonomy?</h2>
+        <h2>What is Bloom's Taxonomy?</h2>
         <p>
-            Bloom’s Taxonomy is a classification system used to define and distinguish 
-            different levels of human cognition — such as remembering, understanding, 
+            Bloom's Taxonomy is a classification system used to define and distinguish
+            different levels of human cognition — such as remembering, understanding,
             applying, analyzing, evaluating, and creating.
         </p>
     </div>
-
     <div class="info-image">
         <img src="{{ url_for('static', filename='bloompyramid.png') }}" alt="Bloom Taxonomy">
     </div>
-
 </div>
+
+<script>
+    const pdfUpload = document.getElementById('pdfUpload');
+    const filePreview = document.getElementById('filePreview');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const fileType = document.getElementById('fileType');
+    const removeFile = document.getElementById('removeFile');
+    const questionBox = document.getElementById('questionBox');
+
+    pdfUpload.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            fileName.textContent = file.name;
+            const sizeKB = (file.size / 1024).toFixed(1);
+            fileSize.textContent = sizeKB + ' KB';
+            const ext = file.name.split('.').pop().toUpperCase();
+            fileType.textContent = ext;
+            questionBox.style.display = 'none';
+            filePreview.style.display = 'block';
+        }
+    });
+
+    removeFile.addEventListener('click', function () {
+        pdfUpload.value = '';
+        filePreview.style.display = 'none';
+        questionBox.style.display = 'block';
+    });
+    
+    questionBox.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        this.closest('form').submit();
+    }
+});
+</script>
 
 </body>
 </html>
