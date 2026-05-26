@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Saved Questions</title>
+</head>
+
+<body>
+
+<h1>Saved Questions</h1>
+
+<table border="1">
+
+    <tr>
+        <th>ID</th>
+        <th>Question</th>
+        <th>Bloom Level ID</th>
+    </tr>
+
+    {% for question in questions %}
+
+    <tr>
+        <td>{{ question.id }}</td>
+        <td>{{ question.question_text }}</td>
+        <td>{{ question.bloom_level_id }}</td>
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+</body>
+</html>
