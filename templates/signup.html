@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+</head>
+<body>
+
+<div class="card">
+  <div class="form-side">
+    <a href="/" class="back-btn">← Back</a>
+    <h1>Create account</h1>
+    <p class="subtitle">Let's get started!</p>
+
+    <div class="input-group">
+      <div class="input-wrap">
+        <input type="text" placeholder="Name">
+      </div>
+
+      <div class="input-wrap">
+        <input type="email" placeholder="Email">
+      </div>
+
+      <div class="input-wrap">
+        <input type="password" id="pw" placeholder="Password">
+        <span class="eye-icon" onclick="togglePw()"></span>
+      </div>
+    </div>
+
+    <button class="btn-create">Create account</button>
+
+    <button class="btn-google">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google">
+      Continue with Google
+    </button>
+
+    <p class="login-link">Already have an account? <a href="#">Login</a></p>
+  </div>
+
+  <div class="image-side">
+      <img src="{{ url_for('static', filename='signupschool.jpg') }}" alt="Illustration">
+  </div>
+</div>
+
+<script>
+function togglePw() {
+    const pw = document.getElementById('pw');
+    pw.type = pw.type === 'password' ? 'text' : 'password';
+}
+</script>
+
+</body>
+</html>
