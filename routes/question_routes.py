@@ -1,4 +1,5 @@
-
+import os
+from services.file_service import extract_text_from_docx, split_questions
 from flask import request, render_template
 from web import app
 from services.bloom_service import classify_question
@@ -9,6 +10,41 @@ from Database.db import get_db_connection
 def analyze_question():
 
     question = request.form.get("question")
+    uploaded_file = request.files.get("pdf_file")
+
+    print("UPLOADED FILE:", uploaded_file)
+
+    if uploaded_file:
+      print("FILENAME:", uploaded_file.filename)
+
+    if uploaded_file and uploaded_file.filename != "":
+        upload_folder = "uploads"
+
+        if not os.path.exists(upload_folder):
+          os.makedirs(upload_folder)
+
+        file_path = os.path.join(upload_folder, uploaded_file.filename)
+        uploaded_file.save(file_path)
+        text = extract_text_from_docx(file_path)
+        print(text)
+        questions = split_questions(text)
+
+        results = []
+
+        for q in questions:
+          level = classify_question(q)
+
+          results.append({
+            "question": q,
+            "level": level
+          })
+
+        return render_template(
+          "index2.html",
+          results=results
+        )
+
+        question = f"File uploaded: {uploaded_file.filename}"
     # validate question length
     word_count = len(question.split())
 
@@ -17,8 +53,8 @@ def analyze_question():
       error = "Please enter a complete question (at least 2 words)."
 
       return render_template(
-        "home.html",
-        error=error
+      "index2.html",
+      error=error
     )
     q_type = request.form.get("type")
 
@@ -50,7 +86,12 @@ def analyze_question():
     result = level
    
 
-    return render_template("home.html", result=result, question=question)
+    return render_template(
+    "index2.html",
+    question=question,
+    level=level,
+    q_type=q_type
+)
 
 
 @app.route("/questions")

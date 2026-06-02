@@ -40,13 +40,11 @@
             <textarea 
                 name="question" 
                 placeholder="What do you want to analyze?" 
-                required></textarea>
+                ></textarea>
 
-            <!-- PLUS BUTTON -->
             <label for="pdfUpload" class="upload-btn">+</label>
 
-            <!-- HIDDEN FILE INPUT -->
-            <input type="file" id="pdfUpload" name="pdf_file">
+            <input type="file" id="pdfUpload" name="pdf_file" accept=".docx,.pdf,.txt">
 
         </div>
 
@@ -54,13 +52,70 @@
 
     </form>
 
-    <div id="result">
-        <p><strong>Question:</strong> {{ question }}</p>
-        <p><strong>Bloom Level:</strong> {{ level }}</p>
-        <p><strong>Type:</strong> {{ q_type }}</p>
-    </div>
+{% if results %}
+
+<div class="result-box">
+
+    <h2>File Analysis Results</h2>
+
+    <table border="1">
+
+        <tr>
+            <th>No.</th>
+            <th>Question</th>
+            <th>Bloom Level</th>
+        </tr>
+
+        {% for item in results %}
+
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ item.question }}</td>
+            <td>{{ item.level }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
 
 </div>
+
+{% endif %}
+
+
+{% if question and level %}
+
+<div id="result">
+
+    <h2>Question Analysis Result</h2>
+
+    <p>
+        <strong>Question:</strong>
+        {{ question }}
+    </p>
+
+    <p>
+        <strong>Bloom Level:</strong>
+        {{ level }}
+    </p>
+
+    {% if q_type %}
+    <p>
+        <strong>Type:</strong>
+        {{ q_type }}
+    </p>
+    {% endif %}
+
+</div>
+
+{% endif %}
+</div>
+
+{% if error %}
+<p style="color:red;">
+    {{ error }}
+</p>
+{% endif %}
 
 <!-- BLOOM TAXONOMY SECTION -->
 <div class="bloom-info">
