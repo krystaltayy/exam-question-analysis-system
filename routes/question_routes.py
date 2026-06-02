@@ -1,3 +1,5 @@
+import os
+from services.file_service import extract_text_from_docx, split_questions
 from flask import request, render_template
 from web import app
 from services.bloom_service import classify_question, c1_keywords, c2_keywords
@@ -11,11 +13,24 @@ def analyze_question():
 
     # FILE UPLOAD → go to dashboard
     if uploaded_file and uploaded_file.filename:
+        upload_folder = "uploads"
+        if not os.path.exists(upload_folder):
+            os.makedirs(upload_folder)
+
+        file_path = os.path.join(upload_folder, uploaded_file.filename)
+        uploaded_file.save(file_path)
+        text = extract_text_from_docx(file_path)
+        questions = split_questions(text)
+
+        results = []
+        for q in questions:
+            level = classify_question(q)
+            results.append({"question": q, "level": level})
+
         return render_template(
             "dashboard.html",
-            question=uploaded_file.filename,
-            level="File uploaded successfully",
-            q_type="Document"
+            filename=uploaded_file.filename,
+            results=results
         )
 
     # SINGLE QUESTION → stay on index2.html

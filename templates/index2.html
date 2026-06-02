@@ -27,16 +27,15 @@
 <div class="container">
 
     <p class="subtitle">Enter Your Question to Analyze</p>
-    
+
     {% if error %}
     <p style="color:red; text-align:center;">{{ error }}</p>
     {% endif %}
 
     <form action="/analyze" method="POST" enctype="multipart/form-data">
-
         <div class="input-box">
 
-            <!-- FILE PREVIEW CARD (shown when file selected) -->
+            <!-- FILE PREVIEW CARD -->
             <div id="filePreview" style="display:none;">
                 <div class="file-card">
                     <div class="file-card-info">
@@ -62,15 +61,35 @@
             </div>
 
         </div>
-
     </form>
 
-    <!-- RESULT -->
+    <!-- SINGLE QUESTION RESULT -->
     {% if question and q_type == "General" %}
     <div id="result">
         <p><strong>Question:</strong> {{ question }}</p>
         <p><strong>Bloom Level:</strong> {{ level }}</p>
         <p><strong>Type:</strong> {{ q_type }}</p>
+    </div>
+    {% endif %}
+
+    <!-- FILE RESULTS TABLE -->
+    {% if results %}
+    <div class="result-box">
+        <h2>File Analysis Results</h2>
+        <table border="1">
+            <tr>
+                <th>No.</th>
+                <th>Question</th>
+                <th>Bloom Level</th>
+            </tr>
+            {% for item in results %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ item.question }}</td>
+                <td>{{ item.level }}</td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
     {% endif %}
 
@@ -118,13 +137,13 @@
         filePreview.style.display = 'none';
         questionBox.style.display = 'block';
     });
-    
+
     questionBox.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        this.closest('form').submit();
-    }
-});
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            this.closest('form').submit();
+        }
+    });
 </script>
 
 </body>
