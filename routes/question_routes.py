@@ -1,5 +1,5 @@
 import os
-from services.file_service import extract_text_from_docx, split_questions
+from services.file_service import extract_text_from_docx, extract_text_from_pdf, extract_text_from_txt, split_questions
 from flask import request, render_template
 from web import app
 from services.bloom_service import classify_question, c1_keywords, c2_keywords
@@ -23,7 +23,22 @@ def analyze_question():
         file_path = os.path.join(upload_folder, uploaded_file.filename)
         uploaded_file.save(file_path)
 
-        text = extract_text_from_docx(file_path)
+        filename = uploaded_file.filename.lower()
+
+        if filename.endswith(".docx"):
+           text = extract_text_from_docx(file_path)
+
+        elif filename.endswith(".pdf"):
+          text = extract_text_from_pdf(file_path)
+
+        elif filename.endswith(".txt"):
+          text = extract_text_from_txt(file_path)
+
+        else:
+         return render_template(
+            "index2.html",
+            error="Unsupported file type. Please upload DOCX, PDF, or TXT file."
+        )
         questions = split_questions(text)
 
         results = []
