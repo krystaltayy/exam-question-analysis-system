@@ -68,7 +68,6 @@
     <div id="result">
         <p><strong>Question:</strong> {{ question }}</p>
         <p><strong>Bloom Level:</strong> {{ level }}</p>
-        <p><strong>Type:</strong> {{ q_type }}</p>
     </div>
     {% endif %}
 
@@ -111,39 +110,60 @@
 </div>
 
 <script>
-    const pdfUpload = document.getElementById('pdfUpload');
-    const filePreview = document.getElementById('filePreview');
-    const fileName = document.getElementById('fileName');
-    const fileSize = document.getElementById('fileSize');
-    const fileType = document.getElementById('fileType');
-    const removeFile = document.getElementById('removeFile');
-    const questionBox = document.getElementById('questionBox');
+const pdfUpload = document.getElementById('pdfUpload');
+const filePreview = document.getElementById('filePreview');
+const fileName = document.getElementById('fileName');
+const fileSize = document.getElementById('fileSize');
+const fileType = document.getElementById('fileType');
+const removeFile = document.getElementById('removeFile');
+const questionBox = document.getElementById('questionBox');
+const form = document.querySelector("form");
 
-    pdfUpload.addEventListener('change', function () {
-        const file = this.files[0];
-        if (file) {
-            fileName.textContent = file.name;
-            const sizeKB = (file.size / 1024).toFixed(1);
-            fileSize.textContent = sizeKB + ' KB';
-            const ext = file.name.split('.').pop().toUpperCase();
-            fileType.textContent = ext;
-            questionBox.style.display = 'none';
-            filePreview.style.display = 'block';
-        }
-    });
+// FILE UPLOAD PREVIEW
+pdfUpload.addEventListener('change', function () {
+    const file = this.files[0];
 
-    removeFile.addEventListener('click', function () {
-        pdfUpload.value = '';
-        filePreview.style.display = 'none';
-        questionBox.style.display = 'block';
-    });
+    if (file) {
+        fileName.textContent = file.name;
 
-    questionBox.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
+        const sizeKB = (file.size / 1024).toFixed(1);
+        fileSize.textContent = sizeKB + ' KB';
+
+        const ext = file.name.split('.').pop().toUpperCase();
+        fileType.textContent = ext;
+
+        questionBox.style.display = 'none';
+        filePreview.style.display = 'block';
+    }
+});
+
+// REMOVE FILE
+removeFile.addEventListener('click', function () {
+    pdfUpload.value = '';
+    filePreview.style.display = 'none';
+    questionBox.style.display = 'block';
+});
+
+// ENTER KEY SUBMIT (CLEAN VERSION)
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+
+        const active = document.activeElement;
+
+        // Prevent Enter creating newline in textarea
+        if (active && active.tagName === "TEXTAREA") {
             e.preventDefault();
-            this.closest('form').submit();
+            form.submit();
+            return;
         }
-    });
+
+        // Submit if file exists OR user is on input
+        if (pdfUpload && (pdfUpload.files.length > 0 || active === pdfUpload)) {
+            e.preventDefault();
+            form.submit();
+        }
+    }
+});
 </script>
 
 </body>

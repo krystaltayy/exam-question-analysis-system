@@ -14,6 +14,10 @@ def dashboard():
 def signup():
     return render_template("signup.html")
 
+@app.route('/index2')
+def index2():
+    return render_template('index2.html')
+
 from routes.question_routes import *
 
 if __name__ == "__main__":
