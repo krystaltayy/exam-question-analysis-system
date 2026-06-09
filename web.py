@@ -10,10 +10,6 @@ def home():
 def dashboard():
     return render_template("dashboard.html")
 
-@app.route("/history")
-def history():
-    return render_template("history.html")
-
 @app.route("/signup")
 def signup():
     return render_template("signup.html")

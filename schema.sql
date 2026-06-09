@@ -46,9 +46,12 @@ CREATE TABLE questions (
     lecturer_id INTEGER NOT NULL,
     bloom_level_id INTEGER NOT NULL,
     question_text TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
-    -- Foreign Key Constraints
+    -- NEW COLUMNS ADDED HERE:
+    question_type TEXT NOT NULL DEFAULT 'MCQ', -- e.g., 'MCQ', 'Essay', 'Case Study', 'Structured'
+    file_path TEXT,                            -- Stores the folder path where the backend saves the attached file
+    
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (lecturer_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (bloom_level_id) REFERENCES blooms_levels (level_id)
 );
@@ -67,7 +70,7 @@ CREATE TABLE essay_details (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     question_id INTEGER NOT NULL UNIQUE, -- UNIQUE ensures only one rubric per essay
     marking_rubric TEXT,                 -- What the lecturer looks for
-    suggested_word_count INTEGER,
+    suggested_word_count INTEGER, 
     FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE
 );
 
@@ -95,26 +98,33 @@ CREATE TABLE question_group_mapping (
     FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE
 );
 
-
-CREATE TABLE uploaded_files (
+-- 1. The Dictionary: Stores all the action verbs used by the algorithm
+CREATE TABLE bloom_verbs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    lecturer_id INTEGER NOT NULL,
-    filename TEXT NOT NULL,
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    FOREIGN KEY (lecturer_id)
-    REFERENCES users(id)
+    verb TEXT NOT NULL UNIQUE,          
+    bloom_level_id INTEGER NOT NULL,    
+    
+    FOREIGN KEY (bloom_level_id) REFERENCES blooms_levels (level_id) ON DELETE CASCADE
+-- Remembering (Level 1)
+INSERT INTO bloom_verbs (verb, bloom_level_id) VALUES ('list', 1), ('define', 1), ('name', 1), ('state', 1), ('identify', 1), ('label', 1);
+-- Understanding (Level 2)
+INSERT INTO bloom_verbs (verb, bloom_level_id) VALUES ('explain', 2), ('summarize', 2), ('interpret', 2), ('classify', 2), ('compare', 2), ('contrast', 2), ('describe', 2);
+-- Applying (Level 3)
+INSERT INTO bloom_verbs (verb, bloom_level_id) VALUES ('apply', 3), ('use', 3), ('demonstrate', 3), ('solve', 3), ('implement', 3), ('execute', 3), ('interpret', 3);
+-- Analyzing (Level 4)
+INSERT INTO bloom_verbs (verb, bloom_level_id) VALUES ('analyze', 4), ('differentiate', 4), ('organize', 4), ('attribute', 4), ('deconstruct', 4), ('relate', 4), ('examine', 4), ('distinguish', 4);
+-- Evaluating (Level 5)
+INSERT INTO bloom_verbs (verb, bloom_level_id) VALUES ('evaluate', 5), ('judge', 5), ('critique', 5), ('justify', 5), ('defend', 5), ('appraise', 5), ('assess', 5), ('argue', 5), ('recommend', 5);
+-- Creating (Level 6)
+INSERT INTO bloom_verbs (verb, bloom_level_id) VALUES ('design', 6), ('construct', 6),( 'develop', 6), ('formulate', 6), ('assemble', 6), ('generate', 6), ('plan', 6), ('produce', 6), ('invent', 6);
 );
 
-CREATE TABLE file_questions (
+CREATE TABLE question_analysis_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    file_id INTEGER NOT NULL,
-    question_text TEXT NOT NULL,
-    bloom_level_id INTEGER NOT NULL,
-
-    FOREIGN KEY (file_id)
-    REFERENCES uploaded_files(id),
-
-    FOREIGN KEY (bloom_level_id)
-    REFERENCES blooms_levels(level_id)
+    question_id INTEGER NOT NULL,
+    verb_id INTEGER NOT NULL,           
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE,
+    FOREIGN KEY (verb_id) REFERENCES bloom_verbs (id) ON DELETE CASCADE
 );
