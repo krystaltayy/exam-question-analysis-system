@@ -94,3 +94,27 @@ CREATE TABLE question_group_mapping (
     FOREIGN KEY (group_id) REFERENCES custom_groups (id) ON DELETE CASCADE,
     FOREIGN KEY (question_id) REFERENCES questions (id) ON DELETE CASCADE
 );
+
+
+CREATE TABLE uploaded_files (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    lecturer_id INTEGER NOT NULL,
+    filename TEXT NOT NULL,
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (lecturer_id)
+    REFERENCES users(id)
+);
+
+CREATE TABLE file_questions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    file_id INTEGER NOT NULL,
+    question_text TEXT NOT NULL,
+    bloom_level_id INTEGER NOT NULL,
+
+    FOREIGN KEY (file_id)
+    REFERENCES uploaded_files(id),
+
+    FOREIGN KEY (bloom_level_id)
+    REFERENCES blooms_levels(level_id)
+);

@@ -1,8 +1,13 @@
 import os
-from services.file_service import extract_text_from_docx, extract_text_from_pdf, extract_text_from_txt, split_questions
 from flask import request, render_template
 from web import app
 from services.bloom_service import classify_question, c1_keywords, c2_keywords
+from services.file_service import (
+    extract_text_from_docx,
+    extract_text_from_pdf,
+    extract_text_from_txt,
+    split_questions
+)
 from Database.db import get_db_connection
 
 
@@ -26,25 +31,34 @@ def analyze_question():
         filename = uploaded_file.filename.lower()
 
         if filename.endswith(".docx"):
-           text = extract_text_from_docx(file_path)
-
+            text = extract_text_from_docx(file_path)
         elif filename.endswith(".pdf"):
-          text = extract_text_from_pdf(file_path)
-
+            text = extract_text_from_pdf(file_path)
         elif filename.endswith(".txt"):
-          text = extract_text_from_txt(file_path)
-
+            text = extract_text_from_txt(file_path)
         else:
-         return render_template(
-            "index2.html",
-            error="Unsupported file type. Please upload DOCX, PDF, or TXT file."
-        )
+            return render_template(
+                "index2.html",
+                error="Unsupported file type. Please upload DOCX, PDF, or TXT file."
+            )
+
         questions = split_questions(text)
 
         results = []
-
         c1_count = 0
         c2_count = 0
+
+        conn = get_db_connection()
+
+        cursor = conn.execute(
+            """
+            INSERT INTO uploaded_files (lecturer_id, filename)
+            VALUES (?, ?)
+            """,
+            (1, uploaded_file.filename)
+        )
+
+        file_id = cursor.lastrowid
 
         for q in questions:
 
@@ -52,19 +66,32 @@ def analyze_question():
 
             if level == "C1 - Remember":
                 c1_count += 1
+                bloom_level_id = 1
                 display_level = "Cognitive 1 - Remember"
-
             elif level == "C2 - Understand":
                 c2_count += 1
+                bloom_level_id = 2
                 display_level = "Cognitive 2 - Understand"
-
             else:
+                bloom_level_id = 0
                 display_level = level
+
+            conn.execute(
+                """
+                INSERT INTO file_questions
+                (file_id, question_text, bloom_level_id)
+                VALUES (?, ?, ?)
+                """,
+                (file_id, q, bloom_level_id)
+            )
 
             results.append({
                 "question": q,
                 "level": display_level
             })
+
+        conn.commit()
+        conn.close()
 
         total = c1_count + c2_count
 
@@ -74,8 +101,6 @@ def analyze_question():
         else:
             c1_percent = 0
             c2_percent = 0
-
-        print(results)
 
         return render_template(
             "dashboard.html",
@@ -93,38 +118,23 @@ def analyze_question():
 
         if word_count < 2:
             error = "Please enter a complete question (at least 2 words)."
-            return render_template(
-                "index2.html",
-                error=error
-            )
+            return render_template("index2.html", error=error)
 
         all_keywords = c1_keywords + c2_keywords
-
         question_lower = question.lower()
 
-        has_keyword = any(
-            keyword in question_lower
-            for keyword in all_keywords
-        )
+        has_keyword = any(keyword in question_lower for keyword in all_keywords)
 
         if not has_keyword:
             error = "Please enter a valid question."
-            return render_template(
-                "index2.html",
-                error=error
-            )
+            return render_template("index2.html", error=error)
 
         level = classify_question(question)
 
-        if not level:
-            level = "No level detected"
-
         if level == "C1 - Remember":
             bloom_level_id = 1
-
         elif level == "C2 - Understand":
             bloom_level_id = 2
-
         else:
             bloom_level_id = 0
 
