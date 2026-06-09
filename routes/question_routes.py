@@ -2,7 +2,7 @@ import os
 from services.file_service import extract_text_from_docx, extract_text_from_pdf, extract_text_from_txt, split_questions
 from flask import request, render_template
 from web import app
-from services.bloom_service import classify_question, c1_keywords, c2_keywords
+from services.bloom_service import detect_bloom_level, c1_keywords, c2_keywords
 from Database.db import get_db_connection
 
 
@@ -48,7 +48,7 @@ def analyze_question():
 
         for q in questions:
 
-            level = classify_question(q)
+            level = detect_bloom_level(q)
 
             if level == "C1 - Remember":
                 c1_count += 1
@@ -114,7 +114,7 @@ def analyze_question():
                 error=error
             )
 
-        level = classify_question(question)
+        level = detect_bloom_level(question)
 
         if not level:
             level = "No level detected"

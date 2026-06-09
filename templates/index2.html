@@ -14,7 +14,8 @@
     <div class="nav-links">
         <a href="#">Home</a>
         <a href="#">About</a>
-        <a href="#">History</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/history">History</a>
     </div>
     <div class="nav-buttons">
         <a href="/login"><button>Log In</button></a>
@@ -26,7 +27,7 @@
 
 <div class="container">
 
-    <p class="subtitle">Enter Your Question to Analyze</p>
+    <p class="subtitle">Enter Your Question to Analyze <br> (only applies to Cognitive 1 & Cognitive 2)</p>
 
     {% if error %}
     <p style="color:red; text-align:center;">{{ error }}</p>

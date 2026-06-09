@@ -21,15 +21,16 @@ c2_keywords = [
     "manage", "match"
 ]
 
-def classify_question(text):
-    text = text.lower()
+def detect_bloom_level(question):
+    question = question.lower()
 
-    for word in c2_keywords:
-        if word in text:
+    for keyword in c2_keywords:
+        if keyword in question:
             return "C2 - Understand"
-
-    for word in c1_keywords:
-        if word in text:
+        
+    for keyword in c1_keywords:
+        if keyword in question:
             return "C1 - Remember"
-
+        
     return "No match"
+

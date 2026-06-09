@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>History</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='history.css') }}">
+</head>
+<body>
+
+<div class="history-container">
+
+    <div class="page-header">
+        <h1>📋 History</h1>
+    </div>
+
+    <h2 class="single-history-title">Single Question History</h2>
+
+    <div class="history-grid">
+
+        <div class="history-card c1">
+            <div class="badge c1-badge">C1 - Remember</div>
+            <h3>Define the term computer</h3>
+            <small>📅 04 Jun 2026</small>
+        </div>
+
+        <div class="history-card c2">
+            <div class="badge c2-badge">C2 - Understand</div>
+            <h3>Explain system software</h3>
+            <small>📅 04 Jun 2026</small>
+        </div>
+
+    </div>
+
+    <h2 class="file-history-title">File History</h2>
+
+    <div class="history-grid">
+
+        <div class="history-card file">
+            <div class="badge file-badge">📄 DOCX</div>
+            <h3>test.docx</h3>
+            <p class="question-count">18 Questions Analyzed</p>
+            <small>📅 04 Jun 2026</small>
+            <a href="/dashboard">
+                <button class="view-btn">View Results →</button>
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
