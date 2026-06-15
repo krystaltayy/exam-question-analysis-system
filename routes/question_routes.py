@@ -1,5 +1,7 @@
 import os
-from flask import request, render_template
+from datetime import datetime
+import pytz
+from flask import request, render_template, redirect, url_for
 from web import app
 from services.bloom_service import detect_bloom_level, c1_keywords, c2_keywords
 from services.file_service import (
@@ -9,6 +11,11 @@ from services.file_service import (
     split_questions
 )
 from Database.db import get_db_connection
+
+
+def get_myt_now():
+    myt = pytz.timezone('Asia/Kuala_Lumpur')
+    return datetime.now(myt).strftime('%Y-%m-%d %H:%M:%S')
 
 
 @app.route("/analyze", methods=["POST"])
@@ -52,10 +59,10 @@ def analyze_question():
 
         cursor = conn.execute(
             """
-            INSERT INTO uploaded_files (lecturer_id, filename)
-            VALUES (?, ?)
+            INSERT INTO uploaded_files (lecturer_id, filename, uploaded_at)
+            VALUES (?, ?, ?)
             """,
-            (1, uploaded_file.filename)
+            (1, uploaded_file.filename, get_myt_now())
         )
 
         file_id = cursor.lastrowid
@@ -108,7 +115,8 @@ def analyze_question():
             results=results,
             c1_percent=c1_percent,
             c2_percent=c2_percent,
-            level="Document Analysis"
+            level="Document Analysis",
+            back_url=url_for('view_history')
         )
 
     # SINGLE QUESTION → stay on index2.html
@@ -143,10 +151,10 @@ def analyze_question():
         conn.execute(
             """
             INSERT INTO questions
-            (lecturer_id, bloom_level_id, question_text)
-            VALUES (?, ?, ?)
+            (lecturer_id, bloom_level_id, question_text, created_at)
+            VALUES (?, ?, ?, ?)
             """,
-            (1, bloom_level_id, question)
+            (1, bloom_level_id, question, get_myt_now())
         )
 
         conn.commit()
@@ -272,5 +280,5 @@ def view_file_dashboard(file_id):
         results=results,
         c1_percent=c1_percent,
         c2_percent=c2_percent,
-        level="Document Analysis"
+        level="Document Analysis",
     )

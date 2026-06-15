@@ -26,6 +26,7 @@ body {
     font-size: 40px;
     font-weight: 800;
     color: #1a3c5e;
+    margin-top: -30px;
 }
 
 .subtitle {
@@ -128,4 +129,23 @@ body {
 
 .view-btn:hover {
     background: #2a7a94;
+}
+.page-header {
+    position: relative;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.back-btn {
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #348EAA;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.back-btn:hover {
+    color: #2a7a94;
 }

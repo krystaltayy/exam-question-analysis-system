@@ -15,7 +15,7 @@
 <body>
 
 <div class="dashboard">
-    <a href="{{ url_for('index2') }}" class="back-btn"> < Back </a>
+    <a href="{{ back_url if back_url else url_for('index2') }}" class="back-btn"> < Back </a>
 
 
 <div class="result-box">
