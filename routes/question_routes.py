@@ -282,3 +282,4 @@ def view_file_dashboard(file_id):
         c2_percent=c2_percent,
         level="Document Analysis",
     )
+
