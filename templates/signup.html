@@ -13,43 +13,58 @@
   <div class="card">
 
     <!-- Login Form -->
-    <div class="form-panel" id="loginPanel">
+    <form class="form-panel" id="loginPanel"
+      action="/login"
+      method="POST">
       <a href="/" class="back-btn">← Back</a>
       <h1>Welcome back</h1>
       <p class="subtitle">Sign in to your account</p>
       <div class="input-group">
-        <input type="email" placeholder="Email">
+        <input type="email"
+               name="email"
+               placeholder="Email"
+               required>
         <div class="input-wrap">
-          <input type="password" id="loginPw" placeholder="Password">
+          <input type="password"
+                 id="loginPw"
+                 name="password"
+                 placeholder="Password"
+                 required>
           <span class="eye-icon" onclick="togglePw('loginPw')">👁</span>
         </div>
       </div>
-      <button class="btn-primary">Sign in</button>
+      <button type="submit"
+              class="btn-primary">
+        Sign in
+      </button>
       <button class="btn-google">
         <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google">
         Continue with Google
       </button>
       <p class="switch-link">Forgot your password? <a href="#">Reset</a></p>
-    </div>
+    </form>
 
     <!-- Register Form -->
-    <div class="form-panel register-panel" id="registerPanel">
+    <form class="form-panel register-panel"
+      id="registerPanel"
+      action="/signup"
+      method="POST">
+
       <h1>Create account</h1>
-      <p class="subtitle">Let's get started!</p>
-      <div class="input-group">
-        <input type="text" placeholder="Full name">
-        <input type="email" placeholder="Email">
-        <div class="input-wrap">
-          <input type="password" id="registerPw" placeholder="Password">
-          <span class="eye-icon" onclick="togglePw('registerPw')">👁</span>
-        </div>
-      </div>
-      <button class="btn-primary">Create account</button>
-      <button class="btn-google">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google">
-        Continue with Google
-      </button>
+
+    <div class="input-group">
+      <input type="text" name="username" placeholder="Full name" required>
+      <input type="email" name="email" placeholder="Email" required>
+
+    <div class="input-wrap">
+      <input type="password" id="registerPw" name="password" placeholder="Password" required>
+      <span class="eye-icon" onclick="togglePw('registerPw')">👁</span>
     </div>
+  </div>
+
+  <button type="submit" class="btn-primary">Create account</button>
+
+  </form>
 
     <!-- Sliding Overlay -->
     <div class="overlay" id="overlay">
