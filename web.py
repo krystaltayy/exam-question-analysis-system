@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, session, redirect, url_for
 
 app = Flask(__name__)
 
@@ -17,6 +17,14 @@ def signup():
 @app.route('/index2')
 def index2():
     return render_template('index2.html')
+
+@app.route("/profile")
+def profile():
+    return render_template("profile.html")
+
+@app.route("/profile/update", methods=["POST"])
+def profile_update():
+    return redirect(url_for('profile'))
 
 from routes.question_routes import *
 
