@@ -11,12 +11,33 @@
     <div class="logo">
         <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo">
     </div>
-    <div class="nav-links">
-        <a href="/history">History</a>
+    <div class="user-menu">
+        {% if session.get('username') %}
+        <span class="user-greeting">Hi, {{ session['username'] }}!</span>
+        {% endif %}
+        <div class="user-icon" onclick="toggleDropdown()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+        </div>
+        <div class="user-dropdown" id="userDropdown">
+            <a href="/profile">Profile</a>
+            <a href="/history">History</a>
+            <a href="/signup">Sign Up / Log In</a>
+            <a href="#" onclick="showLogoutPopup(); return false;">Log Out</a>
+        </div>
     </div>
-    <div class="nav-buttons">
-        <a href="/login"><button>Log In</button></a>
-        <a href="/signup"><button>Sign Up</button></a>
+</div>
+
+<!-- LOGOUT CONFIRMATION POPUP -->
+<div class="popup-overlay" id="logoutOverlay">
+    <div class="popup-box">
+        <p>Are you sure you want to log out?</p>
+        <div class="popup-buttons">
+            <button class="popup-cancel" onclick="hideLogoutPopup()">Cancel</button>
+            <a href="/logout"><button class="popup-confirm">Log Out</button></a>
+        </div>
     </div>
 </div>
 
@@ -120,16 +141,12 @@ const form = document.querySelector("form");
 // FILE UPLOAD PREVIEW
 pdfUpload.addEventListener('change', function () {
     const file = this.files[0];
-
     if (file) {
         fileName.textContent = file.name;
-
         const sizeKB = (file.size / 1024).toFixed(1);
         fileSize.textContent = sizeKB + ' KB';
-
         const ext = file.name.split('.').pop().toUpperCase();
         fileType.textContent = ext;
-
         questionBox.style.display = 'none';
         filePreview.style.display = 'block';
     }
@@ -142,25 +159,47 @@ removeFile.addEventListener('click', function () {
     questionBox.style.display = 'block';
 });
 
-// ENTER KEY SUBMIT (CLEAN VERSION)
+// ENTER KEY SUBMIT
 document.addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
-
         const active = document.activeElement;
-
-        // Prevent Enter creating newline in textarea
         if (active && active.tagName === "TEXTAREA") {
             e.preventDefault();
             form.submit();
             return;
         }
-
-        // Submit if file exists OR user is on input
         if (pdfUpload && (pdfUpload.files.length > 0 || active === pdfUpload)) {
             e.preventDefault();
             form.submit();
         }
     }
+});
+
+// USER DROPDOWN TOGGLE
+function toggleDropdown() {
+    document.getElementById('userDropdown').classList.toggle('show');
+}
+
+// CLOSE DROPDOWN WHEN CLICKING OUTSIDE
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.user-menu')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+
+// LOGOUT POPUP
+function showLogoutPopup() {
+    document.getElementById('userDropdown').classList.remove('show');
+    document.getElementById('logoutOverlay').classList.add('show');
+}
+
+function hideLogoutPopup() {
+    document.getElementById('logoutOverlay').classList.remove('show');
+}
+
+// CLOSE POPUP WHEN CLICKING OUTSIDE BOX
+document.getElementById('logoutOverlay').addEventListener('click', function(e) {
+    if (e.target === this) hideLogoutPopup();
 });
 </script>
 
