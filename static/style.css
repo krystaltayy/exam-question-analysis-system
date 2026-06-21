@@ -3,6 +3,7 @@
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
+
     background-image: url("/static/schoolll.JPG");
     background-size: 100% auto;
     background-repeat: no-repeat;
@@ -11,7 +12,6 @@ body {
     min-height: 100vh;
 }
 
-/* ===== NAVBAR ===== */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -22,7 +22,7 @@ body {
 }
 
 .logo img {
-    height: 70px;
+    height: 70px; 
     width: auto;
 }
 
@@ -38,62 +38,23 @@ body {
     font-weight: 500;
 }
 
-/* ===== USER MENU ===== */
-.user-menu {
-    position: relative;
-}
-
-.user-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #f0f0f0;
+.nav-buttons {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    gap: 10px;
+}
+
+.nav-buttons button {
+    width: auto;
+    padding: 5px 12px;
+    border-radius: 18px;
+    white-space: nowrap;
+    border: 1px solid black;
     cursor: pointer;
-    color: #333;
-    transition: background 0.2s;
-}
-
-.user-icon:hover {
-    background: #e0e0e0;
-}
-
-.user-dropdown {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 48px;
     background: white;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-    min-width: 150px;
-    z-index: 999;
-    overflow: hidden;
+    color: black;
+    font-size: 13px;
 }
 
-.user-dropdown.show {
-    display: block;
-}
-
-.user-dropdown a {
-    display: block;
-    padding: 12px 18px;
-    text-decoration: none;
-    color: #1a1a1a;
-    font-size: 14px;
-    font-weight: 500;
-    transition: background 0.15s;
-}
-
-.user-dropdown a:hover {
-    background: #fdf0e8;
-    color: #333;
-}
-
-/* ===== HERO TITLE ===== */
 h1 {
     max-width: 1100px;
     margin: 50px auto 10px;
@@ -105,7 +66,6 @@ h1 {
     color: black;
 }
 
-/* ===== SUBTITLE ===== */
 .subtitle {
     text-align: center;
     color: gray;
@@ -113,9 +73,8 @@ h1 {
     margin-bottom: 20px;
 }
 
-/* ===== MAIN CARD ===== */
 .container {
-    margin: 70px auto;
+    margin: 50px auto; 
     width: 550px;
     background: rgba(255, 255, 255, 0.95);
     padding: 30px;
@@ -123,82 +82,33 @@ h1 {
     box-shadow: 0 15px 40px rgba(0,0,0,0.1);
 }
 
-/* ===== INPUT BOX ===== */
-.input-box {
-    border: 1px solid #ddd;
-    border-radius: 18px;
-    background: #f9f9f9;
-    padding: 12px 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-/* TEXTAREA */
 textarea {
     width: 100%;
-    min-height: 100px;
-    border: none;
-    background: transparent;
+    height: 150px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 12px;
     font-size: 14px;
-    font-family: 'Poppins', sans-serif;
     resize: none;
-    outline: none;
     box-sizing: border-box;
 }
 
-/* BOTTOM BAR */
-.input-bottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-/* PLUS BUTTON */
-.upload-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    background: #e0e0e0;
-    color: #333;
-    border-radius: 50%;
-    font-size: 22px;
-    cursor: pointer;
-}
-
-.upload-btn:hover {
-    background: #ccc;
-}
-
-/* HIDE FILE INPUT */
-input[type="file"] {
-    display: none;
-}
-
-/* SEND BUTTON */
-.send-btn {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
+button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 20px;
     border: none;
-    background: #FF8DA1; 
+    background: black;
     color: white;
     font-size: 14px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    margin: 0;
 }
 
-.send-btn:hover {
+button:hover {
     opacity: 0.8;
 }
 
-/* RESULT */
 #result {
     margin-top: 20px;
     padding: 15px;
@@ -207,50 +117,6 @@ input[type="file"] {
     font-weight: bold;
 }
 
-/* FILE PREVIEW CARD */
-.file-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    padding: 10px 15px;
-}
-
-.file-card-info p {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.file-meta {
-    color: gray;
-    font-size: 12px !important;
-    font-weight: 400 !important;
-}
-
-.file-badge {
-    background: #1a1a1a;
-    color: white;
-    padding: 4px 10px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 700;
-}
-
-#removeFile {
-    background: none;
-    border: none;
-    color: gray;
-    font-size: 16px;
-    cursor: pointer;
-    width: auto;
-    padding: 0;
-    margin: 0;
-}
-
-/* ===== BLOOM INFO SECTION ===== */
 .bloom-info {
     display: flex;
     justify-content: space-between;
@@ -258,7 +124,6 @@ input[type="file"] {
     padding: 80px 60px;
     background: white;
     margin-top: 60px;
-    position: relative;
 }
 
 .info-text {
@@ -287,7 +152,23 @@ input[type="file"] {
     border-radius: 20px;
 }
 
-/* ===== LOGOUT POPUP ===== */
+.guest-buttons .signin-btn {
+    background: linear-gradient(135deg, #f7a7bb, #ff87a2);
+    color: white;
+    text-decoration: none;
+    padding: 10px 22px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-block;
+    transition: 0.3s ease;
+}
+
+.guest-buttons .signin-btn:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
 .popup-overlay {
     display: none;
     position: fixed;
@@ -302,20 +183,153 @@ input[type="file"] {
     display: flex;
 }
 
+.input-box {
+    border: 1px solid #ddd;
+    border-radius: 18px;
+    background: #f9f9f9;
+    padding: 15px;
+}
+
+textarea {
+    border: none;
+    background: transparent;
+    outline: none;
+}
+
+.input-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.upload-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background: #e0e0e0;
+    color: #333;
+    border-radius: 50%;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.upload-btn:hover {
+    background: #ccc;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.send-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: #ff8da1;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+}
+
+.send-btn:hover {
+    opacity: 0.8;
+}
+
+/* USER MENU */
+.user-menu{
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-greeting{
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.user-icon{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.user-icon:hover{
+    background: #e0e0e0;
+}
+
+/* DROPDOWN */
+.user-dropdown{
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 55px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    min-width: 150px;
+    z-index: 999;
+}
+
+.user-dropdown.show{
+    display: block;
+}
+
+.user-dropdown a{
+    display: block;
+    padding: 12px 18px;
+    text-decoration: none;
+    color: #1a1a1a;
+    font-size: 14px;
+}
+
+.user-dropdown a:hover{
+    background: #fdf0e8;
+}
+
+.navbar {
+    height: 72px;
+    box-sizing: border-box;
+}
+
+.logo img {
+    height: 58px;
+}
+
+.user-menu {
+    margin-left: auto;
+}
+
 .popup-box {
     background: white;
-    border-radius: 16px;
-    padding: 30px 36px;
+    border-radius: 18px;
+    padding: 30px 40px;
     text-align: center;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-    min-width: 280px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+    min-width: 300px;
 }
 
 .popup-box p {
     font-size: 16px;
     font-weight: 600;
-    color: #1a1a1a;
-    margin: 0 0 24px;
+    margin-bottom: 20px;
 }
 
 .popup-buttons {
@@ -324,42 +338,76 @@ input[type="file"] {
     justify-content: center;
 }
 
-.popup-cancel {
-    padding: 9px 22px;
-    border-radius: 18px;
-    border: 1px solid #ddd;
-    background: white;
-    color: #333;
-    font-size: 14px;
-    font-family: 'Poppins', sans-serif;
-    cursor: pointer;
-    font-weight: 500;
-}
-
-.popup-cancel:hover {
-    background: #f5f5f5;
-}
-
+.popup-cancel,
 .popup-confirm {
-    padding: 9px 22px;
-    border-radius: 18px;
+    width: auto;
+    padding: 10px 24px;
+    border-radius: 25px;
+    margin: 0;
     border: none;
-    background: #FFB6C1;
     color: white;
-    font-size: 14px;
     font-family: 'Poppins', sans-serif;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.popup-confirm:hover {
-    background: #ff9aaa;
-}
-
-/* ===== USER GREETING ===== */
-.user-greeting {
     font-size: 14px;
     font-weight: 600;
-    color: #1a1a1a;
-    white-space: nowrap;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Cancel button */
+.popup-cancel {
+    background: #f7a7bb;
+}
+
+/* Log Out button */
+.popup-confirm {
+    background: linear-gradient(135deg, #ff8da1, #f7a7bb);
+}
+
+/* Hover effect */
+.popup-cancel:hover,
+.popup-confirm:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+
+.file-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+}
+
+.file-card-info p {
+    margin: 0;
+}
+
+.file-meta {
+    color: gray;
+    font-size: 12px;
+    margin-top: 4px !important;
+}
+
+.file-badge {
+    background: #1a1a1a;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+#removeFile {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    padding: 0;
+    margin: 0;
+    background: #ff8da1;
+    color: white;
 }

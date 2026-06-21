@@ -12,22 +12,33 @@
         <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo">
     </div>
     <div class="user-menu">
-        {% if session.get('username') %}
+
+    {% if session.get('user_id') %}
+
         <span class="user-greeting">Hi, {{ session['username'] }}!</span>
-        {% endif %}
+
         <div class="user-icon" onclick="toggleDropdown()">
             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="8" r="4"/>
                 <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
             </svg>
         </div>
+
         <div class="user-dropdown" id="userDropdown">
             <a href="/profile">Profile</a>
             <a href="/history">History</a>
-            <a href="/signup">Sign Up / Log In</a>
             <a href="#" onclick="showLogoutPopup(); return false;">Log Out</a>
         </div>
-    </div>
+
+    {% else %}
+
+        <div class="guest-buttons">
+          <a href="/signup" class="signin-btn">Sign Up / Log In</a>
+        </div>
+
+    {% endif %}
+
+</div>
 </div>
 
 <!-- LOGOUT CONFIRMATION POPUP -->

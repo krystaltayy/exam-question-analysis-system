@@ -1,8 +1,12 @@
 body {
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
+    font-family: 'Poppins', sans-serif;
+    background: #fff4f7;
     margin: 0;
     padding: 0;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-position: top center;
+    min-height: 100vh;
 }
 
 .dashboard {
@@ -43,7 +47,7 @@ table {
 
 .chart-box {
     width: 300px;
-    background: white;
+    background: rgba(255,255,255,0.95);
     padding: 20px;
     border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -68,7 +72,8 @@ table {
 }
 
 .table-box th {
-    background-color: #f5f5f5;
+    background: #f7a7bb;
+    color: white;
     padding: 12px;
     text-align: left;
 }
@@ -77,23 +82,54 @@ table {
     padding: 12px;
 }
 
-.table-box th,
+.table-box th {
+    background: #ff8da1;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
 .table-box td {
     border: 1px solid #ddd;
 }
 
 .table-box tr:hover {
-    background-color: #f9f9f9;
+    background: #fff0f4;
 }
 
 .back-btn {
     position: absolute;
-    top: 15px;
-    left: 15px;
-    padding: 8px 14px;
-    color: black;
-    border-radius: 8px;
+    top: 20px;
+    left: 20px;
+    padding: 10px 22px;
+    background: linear-gradient(135deg, #f7a7bb, #ff8da1);
+    color: white;
+    border-radius: 25px;
     text-decoration: none;
+    font-weight: 600;
+    transition: .3s;
+}
+
+.back-btn:hover {
+    transform: scale(1.05);
+}
+
+.dashboard-actions{
+    text-align: center;
+    margin: 20px 0;
+}
+
+.export-btn{
     display: inline-block;
-    font-family: Arial, sans-serif;
+    padding: 12px 25px;
+    background: linear-gradient(135deg,#f7a7bb,#ff8da1);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.export-btn:hover{
+    transform: scale(1.05);
 }

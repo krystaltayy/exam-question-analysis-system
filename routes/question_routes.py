@@ -1,7 +1,12 @@
 import os
+from flask import send_file
+from io import BytesIO
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
 from datetime import datetime
 import pytz
-from flask import request, render_template, redirect, url_for
+from flask import request, render_template, redirect, url_for, session
 from web import app
 from services.bloom_service import detect_bloom_level, c1_keywords, c2_keywords
 from services.file_service import (
@@ -26,6 +31,9 @@ def analyze_question():
 
     # FILE UPLOAD → analyze file and go to dashboard
     if uploaded_file and uploaded_file.filename:
+
+        if "user_id" not in session:
+            return redirect("/login")
 
         upload_folder = "uploads"
 
@@ -62,7 +70,7 @@ def analyze_question():
             INSERT INTO uploaded_files (lecturer_id, filename, uploaded_at)
             VALUES (?, ?, ?)
             """,
-            (1, uploaded_file.filename, get_myt_now())
+            (session["user_id"], uploaded_file.filename, get_myt_now())
         )
 
         file_id = cursor.lastrowid
@@ -110,13 +118,14 @@ def analyze_question():
             c2_percent = 0
 
         return render_template(
-            "dashboard.html",
-            question=uploaded_file.filename,
-            results=results,
-            c1_percent=c1_percent,
-            c2_percent=c2_percent,
-            level="Document Analysis",
-            back_url=url_for('view_history')
+          "dashboard.html",
+          question=uploaded_file.filename,
+          results=results,
+          c1_percent=c1_percent,
+          c2_percent=c2_percent,
+          level="Document Analysis",
+          file_id=file_id,
+          back_url=url_for('home')
         )
 
     # SINGLE QUESTION → stay on index2.html
@@ -154,7 +163,7 @@ def analyze_question():
             (lecturer_id, bloom_level_id, question_text, created_at)
             VALUES (?, ?, ?, ?)
             """,
-            (1, bloom_level_id, question, get_myt_now())
+            (session["user_id"], bloom_level_id, question, get_myt_now())
         )
 
         conn.commit()
@@ -170,24 +179,14 @@ def analyze_question():
     return render_template("index2.html")
 
 
-@app.route("/questions")
-def view_questions():
-
-    conn = get_db_connection()
-
-    questions = conn.execute(
-        "SELECT * FROM questions"
-    ).fetchall()
-
-    conn.close()
-
-    return render_template(
-        "questions.html",
-        questions=questions
-    )
-
 @app.route("/history")
 def view_history():
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    search = request.args.get("search", "")
+    search_pattern = "%" + search + "%"
 
     conn = get_db_connection()
 
@@ -197,13 +196,16 @@ def view_history():
         FROM questions q
         JOIN blooms_levels b
         ON q.bloom_level_id = b.level_id
+        WHERE q.lecturer_id = ?
+        AND q.question_text LIKE ?
         ORDER BY q.created_at DESC
-        """
+        """,
+        (session["user_id"], search_pattern)
     ).fetchall()
 
     uploaded_files = conn.execute(
         """
-        SELECT 
+        SELECT
             uf.id,
             uf.filename,
             uf.uploaded_at,
@@ -211,9 +213,12 @@ def view_history():
         FROM uploaded_files uf
         LEFT JOIN file_questions fq
         ON uf.id = fq.file_id
+        WHERE uf.lecturer_id = ?
+        AND uf.filename LIKE ?
         GROUP BY uf.id
         ORDER BY uf.uploaded_at DESC
-        """
+        """,
+        (session["user_id"], search_pattern)
     ).fetchall()
 
     conn.close()
@@ -221,7 +226,8 @@ def view_history():
     return render_template(
         "history.html",
         single_questions=single_questions,
-        uploaded_files=uploaded_files
+        uploaded_files=uploaded_files,
+        search=search
     )
 
 
@@ -229,12 +235,23 @@ def view_history():
 @app.route("/dashboard/<int:file_id>")
 def view_file_dashboard(file_id):
 
+    if "user_id" not in session:
+        return redirect("/login")
+
     conn = get_db_connection()
 
     file = conn.execute(
-        "SELECT * FROM uploaded_files WHERE id = ?",
-        (file_id,)
+    """
+    SELECT * FROM uploaded_files
+    WHERE id = ?
+    AND lecturer_id = ?
+    """,
+    (file_id, session["user_id"])
     ).fetchone()
+
+    if not file:
+      conn.close()
+      return redirect("/history")
 
     file_questions = conn.execute(
         """
@@ -275,11 +292,117 @@ def view_file_dashboard(file_id):
     c2_percent = round((c2_count / total) * 100) if total > 0 else 0
 
     return render_template(
-        "dashboard.html",
-        question=file["filename"],
-        results=results,
-        c1_percent=c1_percent,
-        c2_percent=c2_percent,
-        level="Document Analysis",
-    )
+    "dashboard.html",
+    question=file["filename"],
+    results=results,
+    c1_percent=c1_percent,
+    c2_percent=c2_percent,
+    level="Document Analysis",
+    file_id=file_id,
+    back_url=url_for('view_history')
+)
 
+@app.route("/export_pdf/<int:file_id>")
+def export_pdf(file_id):
+
+    if "user_id" not in session:
+        return redirect("/login")
+
+    conn = get_db_connection()
+
+    file = conn.execute(
+        """
+        SELECT *
+        FROM uploaded_files
+        WHERE id = ?
+        AND lecturer_id = ?
+        """,
+        (file_id, session["user_id"])
+    ).fetchone()
+
+    if not file:
+        conn.close()
+        return redirect("/history")
+
+    file_questions = conn.execute(
+        """
+        SELECT fq.question_text, b.level_name
+        FROM file_questions fq
+        JOIN blooms_levels b
+        ON fq.bloom_level_id = b.level_id
+        WHERE fq.file_id = ?
+        """,
+        (file_id,)
+    ).fetchall()
+
+    conn.close()
+
+    c1_count = 0
+    c2_count = 0
+
+    for q in file_questions:
+        if q["level_name"] == "Remembering":
+            c1_count += 1
+        elif q["level_name"] == "Understanding":
+            c2_count += 1
+
+    total = c1_count + c2_count
+
+    c1_percent = round((c1_count / total) * 100) if total > 0 else 0
+    c2_percent = round((c2_count / total) * 100) if total > 0 else 0
+
+    buffer = BytesIO()
+
+    doc = SimpleDocTemplate(buffer)
+    styles = getSampleStyleSheet()
+    elements = []
+
+    elements.append(Paragraph("Bloom Taxonomy Analysis Report", styles["Title"]))
+    elements.append(Spacer(1, 20))
+
+    elements.append(Paragraph(f"<b>Filename:</b> {file['filename']}", styles["Normal"]))
+    elements.append(Paragraph(f"<b>Date Uploaded:</b> {file['uploaded_at']}", styles["Normal"]))
+    elements.append(Paragraph(f"<b>Cognitive 1 - Remember:</b> {c1_percent}%", styles["Normal"]))
+    elements.append(Paragraph(f"<b>Cognitive 2 - Understand:</b> {c2_percent}%", styles["Normal"]))
+    elements.append(Spacer(1, 20))
+
+    data = [["No.", "Question", "Bloom Level"]]
+
+    for i, q in enumerate(file_questions, start=1):
+
+        if q["level_name"] == "Remembering":
+            level = "Cognitive 1 - Remember"
+        elif q["level_name"] == "Understanding":
+            level = "Cognitive 2 - Understand"
+        else:
+            level = q["level_name"]
+
+        data.append([
+            str(i),
+            Paragraph(q["question_text"], styles["Normal"]),
+            level
+        ])
+
+    table = Table(data, colWidths=[40, 360, 120])
+
+    table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#ff8da1")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.lightgrey),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#fff4f7")]),
+    ]))
+
+    elements.append(table)
+
+    doc.build(elements)
+
+    buffer.seek(0)
+
+    return send_file(
+        buffer,
+        as_attachment=True,
+        download_name=f"{file['filename']}_analysis_report.pdf",
+        mimetype="application/pdf"
+    )

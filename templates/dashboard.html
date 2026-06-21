@@ -15,7 +15,14 @@
 <body>
 
 <div class="dashboard">
-    <a href="{{ back_url if back_url else url_for('index2') }}" class="back-btn"> < Back </a>
+
+    <a href="{{ back_url }}" class="back-btn">← Back</a>
+
+    <div class="dashboard-actions">
+        <a href="/export_pdf/{{ file_id }}" class="export-btn">
+            Export PDF
+        </a>
+    </div>
 
 
 <div class="result-box">

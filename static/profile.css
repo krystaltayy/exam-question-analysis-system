@@ -226,3 +226,40 @@
 .user-menu {
     margin-left: auto;
 }
+
+/* ACCOUNT MANAGEMENT */
+.account-section{
+    margin-top: 30px;
+}
+
+.account-section h3{
+    color: #444;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.account-note{
+    color: #777;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.delete-account-btn{
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 25px;
+    background: #ff8da1;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.delete-account-btn:hover{
+    background: #f7a7bb;
+}

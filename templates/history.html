@@ -17,6 +17,16 @@
         <h1>📋 History</h1>
     </div>
 
+    <form action="/history" method="GET" class="search-form">
+       <input
+        type="text"
+        name="search"
+        placeholder="Search questions or files..."
+        value="{{ search }}"
+    >
+      <button type="submit">Search</button>
+    </form>
+
     <h2 class="single-history-title">Single Question History</h2>
 
 

@@ -67,12 +67,12 @@
 
                 <div class="field-group">
                     <label>Username</label>
-                    <input type="text" name="username" value="{{ session.get('username', '') }}" id="usernameInput" disabled>
+                    <input type="text" name="username" value="{{ session.get('username', '') }}" id="usernameInput" readonly>
                 </div>
 
                 <div class="field-group">
                     <label>Email</label>
-                    <input type="email" name="email" value="{{ session.get('email', '') }}" id="emailInput" disabled>
+                    <input type="email" name="email" value="{{ session.get('email', '') }}" id="emailInput" readonly>
                 </div>
 
                 <div class="field-group">
@@ -91,11 +91,45 @@
             </div>
         </form>
 
-        <div class="profile-divider"></div>
+                <p class="member-since">
+            Member since {{ session.get('created_at', '') }}
+        </p>
 
-        <p class="member-since">Member since {{ session.get('created_at', '') }}</p>
+        <div class="profile-stats">
 
-    </div>
+            <div class="stat-box">
+                <h3>{{ question_count }}</h3>
+                <p>Questions Analyzed</p>
+            </div>
+
+            <div class="stat-box">
+                <h3>{{ file_count }}</h3>
+                <p>Files Uploaded</p>
+            </div>
+
+        </div>
+
+       <div class="profile-divider"></div>
+
+       <div class="account-section">
+
+       <h3>Account Management</h3>
+
+       <p class="account-note">
+        Deleting your account will permanently remove your profile and all associated analysis records.
+        This action cannot be reversed.
+       </p>
+
+       <form action="/delete_account"
+          method="POST"
+          onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+
+        <button type="submit" class="delete-account-btn">
+            Delete Account
+        </button>
+
+    </form>
+
 </div>
 
 <script>
@@ -103,6 +137,7 @@
 function toggleDropdown() {
     document.getElementById('userDropdown').classList.toggle('show');
 }
+
 document.addEventListener('click', function(e) {
     if (!e.target.closest('.user-menu')) {
         document.getElementById('userDropdown').classList.remove('show');
@@ -114,25 +149,27 @@ function showLogoutPopup() {
     document.getElementById('userDropdown').classList.remove('show');
     document.getElementById('logoutOverlay').classList.add('show');
 }
+
 function hideLogoutPopup() {
     document.getElementById('logoutOverlay').classList.remove('show');
 }
+
 document.getElementById('logoutOverlay').addEventListener('click', function(e) {
     if (e.target === this) hideLogoutPopup();
 });
 
 // EDIT MODE
 function toggleEdit() {
-    document.getElementById('usernameInput').disabled = false;
-    document.getElementById('emailInput').disabled = false;
+    document.getElementById('usernameInput').readOnly = false;
+    document.getElementById('emailInput').readOnly = false;
     document.getElementById('passwordInput').disabled = false;
     document.getElementById('editBtn').style.display = 'none';
     document.getElementById('saveBtnWrap').style.display = 'flex';
 }
 
 function cancelEdit() {
-    document.getElementById('usernameInput').disabled = true;
-    document.getElementById('emailInput').disabled = true;
+    document.getElementById('usernameInput').readOnly = true;
+    document.getElementById('emailInput').readOnly = true;
     document.getElementById('passwordInput').disabled = true;
     document.getElementById('passwordInput').value = '';
     document.getElementById('editBtn').style.display = 'block';
@@ -143,6 +180,7 @@ function cancelEdit() {
 function togglePassword() {
     const input = document.getElementById('passwordInput');
     const btn = document.querySelector('.toggle-pw');
+
     if (input.type === 'password') {
         input.type = 'text';
         btn.textContent = 'Hide';

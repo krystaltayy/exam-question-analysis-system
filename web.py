@@ -15,13 +15,6 @@ def dashboard():
 def index2():
     return render_template('index2.html')
 
-@app.route("/profile")
-def profile():
-    return render_template("profile.html")
-
-@app.route("/profile/update", methods=["POST"])
-def profile_update():
-    return redirect(url_for('profile'))
 
 from routes.question_routes import *
 from routes.auth_routes import *
