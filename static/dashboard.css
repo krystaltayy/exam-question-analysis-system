@@ -1,0 +1,135 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #fff4f7;
+    margin: 0;
+    padding: 0;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-position: top center;
+    min-height: 100vh;
+}
+
+.dashboard {
+    padding: 10px;
+    text-align: center;
+}
+
+table {
+    margin: 0; 
+    text-align: left;
+}
+
+.result-box {
+    background: white;
+    width: 60%;
+    margin: auto;
+    padding: 20px 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 50px;
+    text-align: left;
+}
+
+.result-left p,
+.result-right p {
+    margin: 3px 0;
+}
+
+.charts-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
+
+.chart-box {
+    width: 300px;
+    background: rgba(255,255,255,0.95);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.table-box {
+    margin-top: 40px;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.table-box h2 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.table-box table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-box th {
+    background: #f7a7bb;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+.table-box td {
+    padding: 12px;
+}
+
+.table-box th {
+    background: #ff8da1;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+.table-box td {
+    border: 1px solid #ddd;
+}
+
+.table-box tr:hover {
+    background: #fff0f4;
+}
+
+.back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px 22px;
+    background: linear-gradient(135deg, #f7a7bb, #ff8da1);
+    color: white;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: .3s;
+}
+
+.back-btn:hover {
+    transform: scale(1.05);
+}
+
+.dashboard-actions{
+    text-align: center;
+    margin: 20px 0;
+}
+
+.export-btn{
+    display: inline-block;
+    padding: 12px 25px;
+    background: linear-gradient(135deg,#f7a7bb,#ff8da1);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.export-btn:hover{
+    transform: scale(1.05);
+}

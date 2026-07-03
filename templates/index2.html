@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bloom Taxonomy Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo">
+    </div>
+    <div class="user-menu">
+
+    {% if session.get('user_id') %}
+
+        <span class="user-greeting">Hi, {{ session['username'] }}!</span>
+
+        <div class="user-icon" onclick="toggleDropdown()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+        </div>
+
+        <div class="user-dropdown" id="userDropdown">
+            <a href="/profile">Profile</a>
+            <a href="/history">History</a>
+            <a href="#" onclick="showLogoutPopup(); return false;">Log Out</a>
+        </div>
+
+    {% else %}
+
+        <div class="guest-buttons">
+          <a href="/signup" class="signin-btn">Sign Up / Log In</a>
+        </div>
+
+    {% endif %}
+
+</div>
+</div>
+
+<!-- LOGOUT CONFIRMATION POPUP -->
+<div class="popup-overlay" id="logoutOverlay">
+    <div class="popup-box">
+        <p>Are you sure you want to log out?</p>
+        <div class="popup-buttons">
+            <button class="popup-cancel" onclick="hideLogoutPopup()">Cancel</button>
+            <a href="/logout"><button class="popup-confirm">Log Out</button></a>
+        </div>
+    </div>
+</div>
+
+<!-- LOGIN REQUIRED POPUP -->
+{% if login_required_popup %}
+<div class="popup-overlay show" id="loginRequiredOverlay">
+    <div class="popup-box">
+        <p>You need to log in to upload files.</p>
+        <div class="popup-buttons">
+            <button class="popup-cancel" onclick="hideLoginRequiredPopup()">Close</button>
+            <a href="/login"><button class="popup-confirm">Log In</button></a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<h1>Rule-Based Bloom’s Taxonomy Analyzer for Foundation-Level Questions</h1>
+
+<div class="container">
+
+    <p class="subtitle">Enter Your Question to Analyze <br> (only applies to Cognitive 1 & Cognitive 2)</p>
+
+    {% if error %}
+    <p style="color:red; text-align:center;">{{ error }}</p>
+    {% endif %}
+
+    <form action="/analyze" method="POST" enctype="multipart/form-data">
+        <div class="input-box">
+
+            <!-- FILE PREVIEW CARD -->
+            <div id="filePreview" style="display:none;">
+                <div class="file-card">
+                    <div class="file-card-info">
+                        <p id="fileName">filename.docx</p>
+                        <p id="fileSize" class="file-meta">0 KB</p>
+                    </div>
+                    <span id="fileType" class="file-badge">DOCX</span>
+                    <button type="button" id="removeFile">✕</button>
+                </div>
+            </div>
+
+            <!-- TEXTAREA -->
+            <textarea
+                id="questionBox"
+                name="question"
+                placeholder="What do you want to analyze?"></textarea>
+
+            <!-- BOTTOM BAR -->
+            <div class="input-bottom">
+                <label for="pdfUpload" class="upload-btn">+</label>
+                <input type="file" id="pdfUpload" name="file" accept=".pdf,.txt,.docx">
+                <button type="submit" class="send-btn">➤</button>
+            </div>
+
+        </div>
+    </form>
+
+    <!-- SINGLE QUESTION RESULT -->
+    {% if question and q_type == "General" %}
+    <div id="result">
+        <p><strong>Question:</strong> {{ question }}</p>
+        <p><strong>Bloom Level:</strong> {{ level }}</p>
+    </div>
+    {% endif %}
+
+    <!-- FILE RESULTS TABLE -->
+    {% if results %}
+    <div class="result-box">
+        <h2>File Analysis Results</h2>
+        <table border="1">
+            <tr>
+                <th>No.</th>
+                <th>Question</th>
+                <th>Bloom Level</th>
+            </tr>
+            {% for item in results %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ item.question }}</td>
+                <td>{{ item.level }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- BLOOM TAXONOMY SECTION -->
+<div class="bloom-info">
+    <div class="info-text">
+        <h2>What is Bloom's Taxonomy?</h2>
+        <p>
+            Bloom's Taxonomy is a classification system used to define and distinguish
+            different levels of human cognition — such as remembering, understanding,
+            applying, analyzing, evaluating, and creating.
+        </p>
+    </div>
+    <div class="info-image">
+    <img class="bloom-pic" src="{{ url_for('static', filename='bloompyramidd.png') }}" alt="Bloom Taxonomy">
+</div>
+</div>
+
+<script>
+const pdfUpload = document.getElementById('pdfUpload');
+const filePreview = document.getElementById('filePreview');
+const fileName = document.getElementById('fileName');
+const fileSize = document.getElementById('fileSize');
+const fileType = document.getElementById('fileType');
+const removeFile = document.getElementById('removeFile');
+const questionBox = document.getElementById('questionBox');
+const form = document.querySelector("form");
+
+// FILE UPLOAD PREVIEW
+pdfUpload.addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+        fileName.textContent = file.name;
+        const sizeKB = (file.size / 1024).toFixed(1);
+        fileSize.textContent = sizeKB + ' KB';
+        const ext = file.name.split('.').pop().toUpperCase();
+        fileType.textContent = ext;
+        questionBox.style.display = 'none';
+        filePreview.style.display = 'block';
+    }
+});
+
+// REMOVE FILE
+removeFile.addEventListener('click', function () {
+    pdfUpload.value = '';
+    filePreview.style.display = 'none';
+    questionBox.style.display = 'block';
+});
+
+// ENTER KEY SUBMIT
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+        const active = document.activeElement;
+        if (active && active.tagName === "TEXTAREA") {
+            e.preventDefault();
+            form.submit();
+            return;
+        }
+        if (pdfUpload && (pdfUpload.files.length > 0 || active === pdfUpload)) {
+            e.preventDefault();
+            form.submit();
+        }
+    }
+});
+
+// USER DROPDOWN TOGGLE
+function toggleDropdown() {
+    document.getElementById('userDropdown').classList.toggle('show');
+}
+
+// CLOSE DROPDOWN WHEN CLICKING OUTSIDE
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.user-menu')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+
+// LOGOUT POPUP
+function showLogoutPopup() {
+    document.getElementById('userDropdown').classList.remove('show');
+    document.getElementById('logoutOverlay').classList.add('show');
+}
+
+function hideLogoutPopup() {
+    document.getElementById('logoutOverlay').classList.remove('show');
+}
+
+// LOGIN REQUIRED POPUP
+function hideLoginRequiredPopup() {
+    const popup = document.getElementById('loginRequiredOverlay');
+    if (popup) {
+        popup.classList.remove('show');
+    }
+}
+
+// CLOSE POPUP WHEN CLICKING OUTSIDE BOX
+document.getElementById('logoutOverlay').addEventListener('click', function(e) {
+    if (e.target === this) hideLogoutPopup();
+});
+
+const loginRequiredOverlay = document.getElementById('loginRequiredOverlay');
+if (loginRequiredOverlay) {
+    loginRequiredOverlay.addEventListener('click', function(e) {
+        if (e.target === this) hideLoginRequiredPopup();
+    });
+}
+</script>
+
+</body>
+</html>

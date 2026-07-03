@@ -3,9 +3,10 @@ venv/
 
 # Ignore Python cache files
 __pycache__/
+*.pyc
 
-# Ignore the SQLite database file
+# Ignore SQLite database files
 *.sqlite
 
-# Ignore Mac system files (just in case)
+# Ignore Mac system files
 .DS_Store

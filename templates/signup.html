@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login / Sign Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+</head>
+<body>
+
+<div class="wrapper">
+  <div class="card">
+
+    <!-- Login Form -->
+    <form class="form-panel" id="loginPanel"
+      action="/login"
+      method="POST">
+      <a href="/" class="back-btn">← Back</a>
+      <h1>Welcome back</h1>
+      <p class="subtitle">Sign in to your account</p>
+      {% if error %}
+      <div class="alert alert-error">{{ error }}</div>
+      {% endif %}
+      <div class="input-group">
+        <input type="email"
+               name="email"
+               placeholder="Email"
+               required>
+        <div class="input-wrap">
+          <input type="password"
+                 id="loginPw"
+                 name="password"
+                 placeholder="Password"
+                 required>
+          <span class="eye-icon" onclick="togglePw('loginPw')">👁</span>
+        </div>
+      </div>
+      <button type="submit"
+              class="btn-primary">
+        Sign in
+      </button>
+      <p class="switch-link">Forgot your password? <a href="/forgot_password">Reset</a></p>
+    </form>
+
+    <!-- Register Form -->
+    <form class="form-panel register-panel"
+      id="registerPanel"
+      action="/signup"
+      method="POST">
+
+      <h1>Create Account</h1>
+
+    <div class="input-group">
+      <input type="text" name="username" placeholder="Full name" required>
+      <input type="email" name="email" placeholder="Email" required>
+
+    <div class="input-wrap">
+      <input type="password" id="registerPw" name="password" placeholder="Password" required>
+      <span class="eye-icon" onclick="togglePw('registerPw')">👁</span>
+    </div>
+  </div>
+
+  <button type="submit" class="btn-primary">Create account</button>
+
+  </form>
+
+    <!-- Sliding Overlay -->
+    <div class="overlay" id="overlay">
+      <img src="{{ url_for('static', filename='pink.jpg') }}" alt="Illustration" class="overlay-img">
+      <div class="overlay-content">
+        <h2 id="overlayTitle">New here?</h2>
+        <p id="overlayText">Sign up and discover a great amount of new opportunities!</p>
+        <button class="overlay-btn" onclick="toggle()" id="overlayBtn">Sign up</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let isLogin = true;
+
+function toggle() {
+  const overlay = document.getElementById('overlay');
+  const loginPanel = document.getElementById('loginPanel');
+  const registerPanel = document.getElementById('registerPanel');
+  const overlayTitle = document.getElementById('overlayTitle');
+  const overlayText = document.getElementById('overlayText');
+  const overlayBtn = document.getElementById('overlayBtn');
+
+  if (isLogin) {
+    overlay.classList.add('slide-left');
+    loginPanel.classList.add('hidden-left');
+    registerPanel.classList.remove('hidden-right');
+    overlayTitle.textContent = 'Already have an account?';
+    overlayText.textContent = 'Sign in to stay connected with everything you love.';
+    overlayBtn.textContent = 'Sign in';
+  } else {
+    overlay.classList.remove('slide-left');
+    loginPanel.classList.remove('hidden-left');
+    registerPanel.classList.add('hidden-right');
+    overlayTitle.textContent = 'New here?';
+    overlayText.textContent = 'Sign up and discover a great amount of new opportunities!';
+    overlayBtn.textContent = 'Sign up';
+  }
+  isLogin = !isLogin;
+}
+
+function togglePw(id) {
+  const input = document.getElementById(id);
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+</script>
+
+</body>
+</html>

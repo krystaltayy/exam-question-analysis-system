@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profile - Bloom Taxonomy Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+</head>
+
+<body>
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo">
+    </div>
+    <a href="/" class="back-home">← Home</a>
+    <div class="user-menu">
+        {% if session.get('username') %}
+        <span class="user-greeting">Hi, {{ session['username'] }}!</span>
+        {% endif %}
+        <div class="user-icon" onclick="toggleDropdown()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+        </div>
+        <div class="user-dropdown" id="userDropdown">
+            <a href="/profile">Profile</a>
+            <a href="/history">History</a>
+            <a href="/signup">Sign Up / Log In</a>
+            <a href="#" onclick="showLogoutPopup(); return false;">Log Out</a>
+        </div>
+    </div>
+</div>
+
+<!-- LOGOUT CONFIRMATION POPUP -->
+<div class="popup-overlay" id="logoutOverlay">
+    <div class="popup-box">
+        <p>Are you sure you want to log out?</p>
+        <div class="popup-buttons">
+            <button class="popup-cancel" onclick="hideLogoutPopup()">Cancel</button>
+            <a href="/logout"><button class="popup-confirm">Log Out</button></a>
+        </div>
+    </div>
+</div>
+
+<!-- PROFILE PAGE -->
+<div class="profile-wrapper">
+    <div class="profile-card">
+
+        <!-- AVATAR + NAME -->
+        <div class="profile-header">
+            <div class="avatar-circle">
+                {{ session.get('username', 'U')[0].upper() }}
+            </div>
+            <div class="profile-header-info">
+                <h2>{{ session.get('username', 'User') }}</h2>
+                <p>{{ session.get('email', '') }}</p>
+            </div>
+            <button class="edit-btn" id="editBtn" onclick="toggleEdit()">Edit</button>
+        </div>
+
+        <div class="profile-divider"></div>
+
+        <!-- FORM -->
+        <form action="/profile/update" method="POST" id="profileForm">
+            <div class="profile-fields">
+
+                <div class="field-group">
+                    <label>Username</label>
+                    <input type="text" name="username" value="{{ session.get('username', '') }}" id="usernameInput" readonly>
+                </div>
+
+                <div class="field-group">
+                    <label>Email</label>
+                    <input type="email" name="email" value="{{ session.get('email', '') }}" id="emailInput" readonly>
+                </div>
+
+                <div class="field-group">
+                    <label>New Password</label>
+                    <div class="password-wrap">
+                        <input type="password" name="password" placeholder="Enter new password" id="passwordInput" disabled>
+                        <button type="button" class="toggle-pw" onclick="togglePassword()">Show</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="save-btn-wrap" id="saveBtnWrap" style="display:none;">
+                <button type="button" class="cancel-edit-btn" onclick="cancelEdit()">Cancel</button>
+                <button type="submit" class="save-btn">Save Changes</button>
+            </div>
+        </form>
+
+                <p class="member-since">
+            Member since {{ session.get('created_at', '') }}
+        </p>
+
+        <div class="profile-stats">
+
+            <div class="stat-box">
+                <h3>{{ question_count }}</h3>
+                <p>Questions Analyzed</p>
+            </div>
+
+            <div class="stat-box">
+                <h3>{{ file_count }}</h3>
+                <p>Files Uploaded</p>
+            </div>
+
+        </div>
+
+       <div class="profile-divider"></div>
+
+       <div class="account-section">
+
+       <h3>Manage Account</h3>
+
+       <p class="account-note">
+        Deleting your account will permanently remove your profile and all associated analysis records.
+        This action cannot be reversed.
+       </p>
+
+       <form action="/delete_account"
+          method="POST"
+          onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+
+        <button type="submit" class="delete-account-btn">
+            Delete Account
+        </button>
+
+    </form>
+
+</div>
+
+<script>
+// DROPDOWN
+function toggleDropdown() {
+    document.getElementById('userDropdown').classList.toggle('show');
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.user-menu')) {
+        document.getElementById('userDropdown').classList.remove('show');
+    }
+});
+
+// LOGOUT POPUP
+function showLogoutPopup() {
+    document.getElementById('userDropdown').classList.remove('show');
+    document.getElementById('logoutOverlay').classList.add('show');
+}
+
+function hideLogoutPopup() {
+    document.getElementById('logoutOverlay').classList.remove('show');
+}
+
+document.getElementById('logoutOverlay').addEventListener('click', function(e) {
+    if (e.target === this) hideLogoutPopup();
+});
+
+// EDIT MODE
+function toggleEdit() {
+    document.getElementById('usernameInput').readOnly = false;
+    document.getElementById('emailInput').readOnly = false;
+    document.getElementById('passwordInput').disabled = false;
+    document.getElementById('editBtn').style.display = 'none';
+    document.getElementById('saveBtnWrap').style.display = 'flex';
+}
+
+function cancelEdit() {
+    document.getElementById('usernameInput').readOnly = true;
+    document.getElementById('emailInput').readOnly = true;
+    document.getElementById('passwordInput').disabled = true;
+    document.getElementById('passwordInput').value = '';
+    document.getElementById('editBtn').style.display = 'block';
+    document.getElementById('saveBtnWrap').style.display = 'none';
+}
+
+// SHOW/HIDE PASSWORD
+function togglePassword() {
+    const input = document.getElementById('passwordInput');
+    const btn = document.querySelector('.toggle-pw');
+
+    if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = 'Hide';
+    } else {
+        input.type = 'password';
+        btn.textContent = 'Show';
+    }
+}
+</script>
+
+</body>
+</html>

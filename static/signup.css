@@ -1,0 +1,265 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: url("../static/signupp.jpg.avif") center/cover no-repeat fixed;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  position: relative;
+  width: 860px;
+  height: 520px;
+  background: #f0edf0;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+  flex-shrink: 0;
+}
+
+/* --- Form Panels --- */
+.form-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  padding: 44px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #f0edf0;
+  transition: transform 0.6s cubic-bezier(0.77,0,0.175,1), opacity 0.4s ease;
+  z-index: 1;
+}
+
+.register-panel {
+  left: 50%;
+}
+
+.form-panel.hidden-left {
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.form-panel.hidden-right {
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* --- Typography --- */
+h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 20px;
+}
+
+/* --- Inputs --- */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.input-group > input,
+.input-wrap input {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: none;
+  background: #fff;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  color: #1a1a1a;
+  outline: none;
+}
+
+.input-group > input:focus,
+.input-wrap input:focus {
+  box-shadow: 0 0 0 2px #FFB6C155;
+}
+
+.input-wrap {
+  position: relative;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0.45;
+}
+
+/* --- Buttons --- */
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  background: #FFB6C1;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover { background: #FF8DA1; }
+
+.btn-google {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  background: white;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 0.2s;
+}
+
+.btn-google:hover { background: #f7f7f7; }
+
+.btn-google img {
+  width: 18px;
+  height: 18px;
+}
+
+.back-btn {
+  text-decoration: none;
+  color: #FFB6C1;
+  font-size: 13px;
+  margin-bottom: 14px;
+  display: inline-block;
+}
+
+.back-btn:hover { opacity: 0.7; }
+
+.switch-link {
+  font-size: 12px;
+  color: #999;
+  margin-top: 10px;
+}
+
+.switch-link a {
+  color: #FFB6C1;
+  text-decoration: none;
+}
+
+/* --- Overlay --- */
+.overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  z-index: 10;
+  overflow: hidden;
+  transition: transform 0.6s cubic-bezier(0.77,0,0.175,1);
+}
+
+.overlay.slide-left {
+  transform: translateX(-100%);
+}
+
+.overlay-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.overlay-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem 2rem;
+  text-align: center;
+  background: linear-gradient(to top, rgba(180,60,90,0.92) 60%, transparent);
+}
+
+.overlay-content h2 {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.overlay-content p {
+  color: rgba(255,255,255,0.9);
+  font-size: 12px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.overlay-btn {
+  background: transparent;
+  border: 1.5px solid #fff;
+  color: #fff;
+  padding: 9px 26px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.overlay-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.alert {
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.alert-success {
+    background: #E4F7E9;
+    color: #2E7D4F;
+}
+
+.alert-error {
+    background: #FDE8E8;
+    color: #C0392B;
+}

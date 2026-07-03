@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bloom Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<!-- NAVBAR -->
+<div class="navbar">
+
+    <div class="logo">
+        <img src="{{ url_for('static', filename='logo.jpg') }}" alt="Logo">
+    </div>
+
+    <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Analyzer</a>
+    </div>
+
+    <div class="nav-buttons">
+        <button>Log In</button>
+        <button>Sign Up</button>
+    </div>
+
+</div>
+<h1>Rule-Based Web Examination Question Analysis System Using Bloom’s Taxonomy</h1>
+
+<div class="container">
+    <p class="subtitle">Enter your question to analyze</p>
+
+    <form action="/analyze" method="POST">
+        <textarea name="question" placeholder="What do you want to analyze?" required></textarea>
+        <button type="submit">Analyze question</button>
+    </form>
+
+    <div id="result">
+        <p><strong>Question:</strong> {{ question }}</p>
+        <p><strong>Bloom Level:</strong> {{ level }}</p>
+        <p><strong>Type:</strong> {{ q_type }}</p>
+    </div>
+</div>
+
+</div>
+
+<!-- ✅ BLOOM TAXONOMY SECTION -->
+<div class="bloom-info">
+
+    <div class="info-text">
+        <h2>What is Bloom’s Taxonomy?</h2>
+        <p>
+            Bloom’s Taxonomy is a classification system used to define and distinguish 
+            different levels of human cognition — such as remembering, understanding, 
+            applying, analyzing, evaluating, and creating.
+        </p>
+    </div>
+
+    <div class="info-image">
+        <img src="{{ url_for('static', filename='bloompyramid.png') }}" alt="Bloom Taxonomy">
+    </div>
+
+</div>
+
+</body>
+</html>

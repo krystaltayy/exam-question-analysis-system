@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+
+<title>Dashboard</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <a href="{{ back_url }}" class="back-btn">← Back</a>
+
+    <div class="dashboard-actions">
+        <a href="/export_pdf/{{ file_id }}" class="export-btn">
+            Export PDF
+        </a>
+    </div>
+
+
+<div class="result-box">
+
+    <div class="result-left">
+        <p><strong>Filename:</strong> {{ question }}</p>
+        <p><strong>Cognitive 1 - Remember:</strong> {{ c1_percent }}%</p>
+        <p><strong>Cognitive 2 - Understand:</strong> {{ c2_percent }}%</p>
+    </div>
+
+    <div class="result-right">
+        <p><strong>Bloom Level:</strong> {{ level }}</p>
+        <p><strong>Date Analyzed:</strong> <span id="datetime"></span></p>
+    </div>
+
+</div>
+
+<div class="charts-container">
+
+    <div class="chart-box">
+        <h3>Cognitive 1 - Remember</h3>
+        <canvas id="chart1"></canvas>
+    </div>
+
+    <div class="chart-box">
+        <h3>Cognitive 2 - Understand</h3>
+        <canvas id="chart2"></canvas>
+    </div>
+
+    <div class="chart-box">
+        <h3>Overall Classification</h3>
+        <canvas id="chart3"></canvas>
+    </div>
+
+</div>
+
+<div class="table-box">
+
+    <h2>Analyzed Questions</h2>
+
+    <table>
+
+        <tr>
+            <th>No.</th>
+            <th>Question</th>
+            <th>Bloom Level</th>
+        </tr>
+
+        {% for result in results %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ result.question }}</td>
+            <td>{{ result.level }}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+</div>
+
+
+</div>
+
+<script>
+
+// DATE & TIME
+const now = new Date();
+
+const options = {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+};
+
+document.getElementById('datetime').textContent =
+    now.toLocaleString('en-GB', options);
+
+// Values passed from Flask
+const c1 = {{ c1_percent }};
+const c2 = {{ c2_percent }};
+
+// CHART 1
+new Chart(document.getElementById('chart1'), {
+    type: 'pie',
+    data: {
+        labels: ['Remember'],
+        datasets: [{
+            data: [c1, 100 - c1],
+            backgroundColor: ['#ff9f43', '#eeeeee']
+        }]
+    }
+});
+
+// CHART 2
+new Chart(document.getElementById('chart2'), {
+    type: 'pie',
+    data: {
+        labels: ['Understand'],
+        datasets: [{
+            data: [c2, 100 - c2],
+            backgroundColor: ['#48dbfb', '#eeeeee']
+        }]
+    }
+});
+
+// CHART 3
+new Chart(document.getElementById('chart3'), {
+    type: 'pie',
+    data: {
+        labels: ['Cognitive 1 - Remember', 'Cognitive 2 - Understand'],
+        datasets: [{
+            data: [c1, c2],
+            backgroundColor: ['#ff9f43', '#48dbfb']
+        }]
+    }
+});
+
+</script>
+
+</body>
+</html>
