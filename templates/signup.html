@@ -20,7 +20,7 @@
       <h1>Welcome back</h1>
       <p class="subtitle">Sign in to your account</p>
       {% if error %}
-      <p style="color:red; text-align:center;">{{ error }}</p>
+      <div class="alert alert-error">{{ error }}</div>
       {% endif %}
       <div class="input-group">
         <input type="email"
@@ -49,7 +49,7 @@
       action="/signup"
       method="POST">
 
-      <h1>Create account</h1>
+      <h1>Create Account</h1>
 
     <div class="input-group">
       <input type="text" name="username" placeholder="Full name" required>

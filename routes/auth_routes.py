@@ -1,10 +1,13 @@
-from flask import request, render_template, redirect, session
+from flask import request, render_template, redirect, session, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Mail, Message
 from web import app
 from Database.db import get_db_connection
 import random
 import string
+import secrets
+import re
+from datetime import datetime, timedelta
 
 # Mail config
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
@@ -34,15 +37,15 @@ def signup():
         conn = get_db_connection()
 
         existing_user = conn.execute(
-            "SELECT * FROM users WHERE email = ?",
-            (email,)
+            "SELECT * FROM users WHERE email = ? OR username = ?",
+            (email, username)
         ).fetchone()
 
         if existing_user:
             conn.close()
             return render_template(
                 "signup.html",
-                error="Email already exists. Please log in."
+                error="Username or email already exists. Please log in."
             )
 
         code = generate_code()
@@ -291,7 +294,14 @@ def forgot_password():
 
     if request.method == "POST":
         email = request.form.get("email")
-        new_password = request.form.get("new_password")
+
+        # Check email format first
+        email_pattern = r"^[^\s@]+@[^\s@]+\.[^\s@]+$"
+        if not email or not re.match(email_pattern, email):
+            return render_template(
+                "forgot_password.html",
+                error="Please enter a valid email address."
+            )
 
         conn = get_db_connection()
 
@@ -307,23 +317,78 @@ def forgot_password():
                 error="Email not found."
             )
 
-        new_password_hash = generate_password_hash(new_password, method="pbkdf2:sha256")
+        token = secrets.token_urlsafe(32)
+        expiry = (datetime.now() + timedelta(minutes=30)).isoformat()
 
         conn.execute(
             """
             UPDATE users
-            SET password_hash = ?
+            SET reset_token = ?, reset_token_expiry = ?
             WHERE email = ?
             """,
-            (new_password_hash, email)
+            (token, expiry, email)
         )
 
         conn.commit()
         conn.close()
 
+        reset_link = url_for("reset_password", token=token, _external=True)
+
+        msg = Message("Reset Your Password", recipients=[email])
+        msg.body = f"Hi,\n\nClick the link below to reset your password. This link expires in 30 minutes.\n\n{reset_link}\n\nIf you didn't request this, ignore this email."
+        mail.send(msg)
+
         return render_template(
             "forgot_password.html",
-            success="Password reset successfully. You can now log in."
+            success="A reset link has been sent to your email."
         )
 
     return render_template("forgot_password.html")
+
+
+@app.route("/reset_password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+
+    conn = get_db_connection()
+
+    user = conn.execute(
+        "SELECT * FROM users WHERE reset_token = ?",
+        (token,)
+    ).fetchone()
+
+    if not user:
+        conn.close()
+        return render_template("reset_password.html", error="Invalid or expired link.", invalid=True)
+
+    expiry = datetime.fromisoformat(user["reset_token_expiry"])
+
+    if datetime.now() > expiry:
+        conn.close()
+        return render_template("reset_password.html", error="This link has expired.", invalid=True)
+
+    if request.method == "POST":
+        new_password = request.form.get("new_password")
+        confirm_password = request.form.get("confirm_password")
+
+        if new_password != confirm_password:
+            conn.close()
+            return render_template("reset_password.html", error="Passwords do not match.", token=token)
+
+        new_password_hash = generate_password_hash(new_password, method="pbkdf2:sha256")
+
+        conn.execute(
+            """
+            UPDATE users
+            SET password_hash = ?, reset_token = NULL, reset_token_expiry = NULL
+            WHERE id = ?
+            """,
+            (new_password_hash, user["id"])
+        )
+
+        conn.commit()
+        conn.close()
+
+        return render_template("reset_password.html", success="Password reset successfully. You can now log in.")
+
+    conn.close()
+    return render_template("reset_password.html", token=token)
