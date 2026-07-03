@@ -52,7 +52,20 @@
     </div>
 </div>
 
-<h1>Rule-Based Web Examination Question Analysis System Using Bloom's Taxonomy</h1>
+<!-- LOGIN REQUIRED POPUP -->
+{% if login_required_popup %}
+<div class="popup-overlay show" id="loginRequiredOverlay">
+    <div class="popup-box">
+        <p>You need to log in to upload files.</p>
+        <div class="popup-buttons">
+            <button class="popup-cancel" onclick="hideLoginRequiredPopup()">Close</button>
+            <a href="/login"><button class="popup-confirm">Log In</button></a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<h1>Rule-Based Bloom’s Taxonomy Analyzer for Foundation-Level Questions</h1>
 
 <div class="container">
 
@@ -135,8 +148,8 @@
         </p>
     </div>
     <div class="info-image">
-        <img src="{{ url_for('static', filename='bloompyramid.png') }}" alt="Bloom Taxonomy">
-    </div>
+    <img class="bloom-pic" src="{{ url_for('static', filename='bloompyramidd.png') }}" alt="Bloom Taxonomy">
+</div>
 </div>
 
 <script>
@@ -208,10 +221,25 @@ function hideLogoutPopup() {
     document.getElementById('logoutOverlay').classList.remove('show');
 }
 
+// LOGIN REQUIRED POPUP
+function hideLoginRequiredPopup() {
+    const popup = document.getElementById('loginRequiredOverlay');
+    if (popup) {
+        popup.classList.remove('show');
+    }
+}
+
 // CLOSE POPUP WHEN CLICKING OUTSIDE BOX
 document.getElementById('logoutOverlay').addEventListener('click', function(e) {
     if (e.target === this) hideLogoutPopup();
 });
+
+const loginRequiredOverlay = document.getElementById('loginRequiredOverlay');
+if (loginRequiredOverlay) {
+    loginRequiredOverlay.addEventListener('click', function(e) {
+        if (e.target === this) hideLoginRequiredPopup();
+    });
+}
 </script>
 
 </body>

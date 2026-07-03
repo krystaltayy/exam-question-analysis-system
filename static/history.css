@@ -189,3 +189,9 @@ body {
 .search-form button:hover {
     opacity: 0.85;
 }
+
+.empty-msg {
+    color: #FFB6C1;
+    font-size: 14px;
+    font-style: italic;
+}

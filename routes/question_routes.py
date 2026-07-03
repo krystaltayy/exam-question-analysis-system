@@ -33,7 +33,10 @@ def analyze_question():
     if uploaded_file and uploaded_file.filename:
 
         if "user_id" not in session:
-            return redirect("/login")
+            return render_template(
+            "index2.html",
+            login_required_popup=True
+        )
 
         upload_folder = "uploads"
 
@@ -231,7 +234,6 @@ def view_history():
     )
 
 
-
 @app.route("/dashboard/<int:file_id>")
 def view_file_dashboard(file_id):
 
@@ -257,7 +259,7 @@ def view_file_dashboard(file_id):
         """
         SELECT fq.question_text, b.level_name
         FROM file_questions fq
-        JOIN blooms_levels b
+        LEFT JOIN blooms_levels b
         ON fq.bloom_level_id = b.level_id
         WHERE fq.file_id = ?
         """,
@@ -279,7 +281,7 @@ def view_file_dashboard(file_id):
             c2_count += 1
             level = "Cognitive 2 - Understand"
         else:
-            level = q["level_name"]
+            level = "No Match"
 
         results.append({
             "question": q["question_text"],
@@ -328,7 +330,7 @@ def export_pdf(file_id):
         """
         SELECT fq.question_text, b.level_name
         FROM file_questions fq
-        JOIN blooms_levels b
+        LEFT JOIN blooms_levels b
         ON fq.bloom_level_id = b.level_id
         WHERE fq.file_id = ?
         """,
@@ -375,7 +377,7 @@ def export_pdf(file_id):
         elif q["level_name"] == "Understanding":
             level = "Cognitive 2 - Understand"
         else:
-            level = q["level_name"]
+            level = "No Match"
 
         data.append([
             str(i),

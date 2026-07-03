@@ -1,7 +1,24 @@
 from flask import request, render_template, redirect, session
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_mail import Mail, Message
 from web import app
 from Database.db import get_db_connection
+import random
+import string
+
+# Mail config
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USERNAME"] = "huiennno3@gmail.com"
+app.config["MAIL_PASSWORD"] = "flfo qnjn hokv idny"
+app.config["MAIL_DEFAULT_SENDER"] = "huiennno3@gmail.com"
+
+mail = Mail(app)
+
+
+def generate_code():
+    return ''.join(random.choices(string.digits, k=6))
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -12,7 +29,7 @@ def signup():
         email = request.form.get("email")
         password = request.form.get("password")
 
-        password_hash = generate_password_hash(password)
+        password_hash = generate_password_hash(password, method="pbkdf2:sha256")
 
         conn = get_db_connection()
 
@@ -28,20 +45,66 @@ def signup():
                 error="Email already exists. Please log in."
             )
 
+        code = generate_code()
+
         conn.execute(
             """
-            INSERT INTO users (username, email, password_hash)
-            VALUES (?, ?, ?)
+            INSERT INTO users (username, email, password_hash, is_verified, verification_code)
+            VALUES (?, ?, ?, 0, ?)
             """,
-            (username, email, password_hash)
+            (username, email, password_hash, code)
         )
 
         conn.commit()
         conn.close()
 
-        return redirect("/login")
+        # Send verification email
+        msg = Message("Your Verification Code", recipients=[email])
+        msg.body = f"Hi {username},\n\nYour verification code is: {code}\n\nEnter this code to activate your account."
+        mail.send(msg)
+
+        session["pending_email"] = email
+
+        return redirect("/verify")
 
     return render_template("signup.html")
+
+
+@app.route("/verify", methods=["GET", "POST"])
+def verify():
+
+    email = session.get("pending_email")
+
+    if not email:
+        return redirect("/signup")
+
+    if request.method == "POST":
+        code = request.form.get("code")
+
+        conn = get_db_connection()
+
+        user = conn.execute(
+            "SELECT * FROM users WHERE email = ? AND verification_code = ?",
+            (email, code)
+        ).fetchone()
+
+        if not user:
+            conn.close()
+            return render_template("verify.html", error="Invalid code. Please try again.")
+
+        conn.execute(
+            "UPDATE users SET is_verified = 1, verification_code = NULL WHERE email = ?",
+            (email,)
+        )
+
+        conn.commit()
+        conn.close()
+
+        session.pop("pending_email", None)
+
+        return render_template("verify.html", success=True)
+
+    return render_template("verify.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -60,17 +123,18 @@ def login():
 
         conn.close()
 
-        if user and check_password_hash(user["password_hash"], password):
-            session["user_id"] = user["id"]
-            session["username"] = user["username"]
-            session["email"] = user["email"]
-            session["created_at"] = user["created_at"]
-            return redirect("/")
+        if not user or not check_password_hash(user["password_hash"], password):
+            return render_template("signup.html", error="Invalid email or password.")
 
-        return render_template(
-            "signup.html",
-            error="Invalid email or password."
-        )
+        if not user["is_verified"]:
+            session["pending_email"] = email
+            return redirect("/verify")
+
+        session["user_id"] = user["id"]
+        session["username"] = user["username"]
+        session["email"] = user["email"]
+        session["created_at"] = user["created_at"]
+        return redirect("/")
 
     return render_template("signup.html")
 
@@ -156,7 +220,7 @@ def update_profile():
         )
 
     if password and password.strip():
-        password_hash = generate_password_hash(password)
+        password_hash = generate_password_hash(password, method="pbkdf2:sha256")
 
         conn.execute(
             """
@@ -243,7 +307,7 @@ def forgot_password():
                 error="Email not found."
             )
 
-        new_password_hash = generate_password_hash(new_password)
+        new_password_hash = generate_password_hash(new_password, method="pbkdf2:sha256")
 
         conn.execute(
             """

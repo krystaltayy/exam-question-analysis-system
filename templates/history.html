@@ -14,7 +14,7 @@
 <div class="history-container">
 
     <div class="page-header">
-        <h1>📋 History</h1>
+        <h1>History</h1>
     </div>
 
     <form action="/history" method="GET" class="search-form">
@@ -29,49 +29,42 @@
 
     <h2 class="single-history-title">Single Question History</h2>
 
-
 <div class="history-grid">
-
-    {% for item in single_questions %}
-
-    <div class="history-card">
-        <div class="badge">
-            {{ item.level_name }}
+    {% if single_questions %}
+        {% for item in single_questions %}
+        <div class="history-card">
+            <div class="badge">
+                {{ item.level_name }}
+            </div>
+            <h3>{{ item.question_text }}</h3>
+            <small>📅 {{ item.created_at }}</small>
         </div>
-
-        <h3>{{ item.question_text }}</h3>
-
-        <small>📅 {{ item.created_at }}</small>
-    </div>
-
-    {% endfor %}
-
+        {% endfor %}
+    {% else %}
+        <p class="empty-msg">You have not analyzed any single questions yet.</p>
+    {% endif %}
 </div>
 
-    <h2 class="file-history-title">File History</h2>
+<h2 class="file-history-title">File History</h2>
 
 <div class="history-grid">
-
-    {% for file in uploaded_files %}
-
-    <div class="history-card file">
-        <div class="badge file-badge">📄 FILE</div>
-
-        <h3>{{ file.filename }}</h3>
-
-        <p class="question-count">
-            {{ file.question_count }} Questions Analyzed
-        </p>
-
-        <small>📅 {{ file.uploaded_at }}</small>
-
-        <a href="/dashboard/{{ file.id }}">
-            <button class="view-btn">View Results →</button>
-        </a>
-    </div>
-
-    {% endfor %}
-
+    {% if uploaded_files %}
+        {% for file in uploaded_files %}
+        <div class="history-card file">
+            <div class="badge file-badge">📄 FILE</div>
+            <h3>{{ file.filename }}</h3>
+            <p class="question-count">
+                {{ file.question_count }} Questions Analyzed
+            </p>
+            <small>📅 {{ file.uploaded_at }}</small>
+            <a href="/dashboard/{{ file.id }}">
+                <button class="view-btn">View Results →</button>
+            </a>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="empty-msg">You have not uploaded any files yet.</p>
+    {% endif %}
 </div>
 
 </div>
