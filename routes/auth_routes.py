@@ -18,6 +18,7 @@ app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")
 app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
 app.config["MAIL_DEFAULT_SENDER"] = os.environ.get("MAIL_USERNAME")
 
+app.config["MAIL_TIMEOUT"] = 10
 mail = Mail(app)
 
 
@@ -337,8 +338,14 @@ def forgot_password():
 
         msg = Message("Reset Your Password", recipients=[email])
         msg.body = f"Hi,\n\nClick the link below to reset your password. This link expires in 30 minutes.\n\n{reset_link}\n\nIf you didn't request this, ignore this email."
-        mail.send(msg)
-
+        try:
+           mail.send(msg)
+        except Exception as e:
+           print("Email sending failed:", e)
+           return render_template(
+              "forgot_password.html",
+               error="Failed to send reset email. Please try again later."
+        )
         return render_template(
             "forgot_password.html",
             success="A reset link has been sent to your email."
