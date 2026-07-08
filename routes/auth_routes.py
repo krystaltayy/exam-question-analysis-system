@@ -13,9 +13,10 @@ from datetime import datetime, timedelta
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 587
 app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USERNAME"] = "huiennno3@gmail.com"
-app.config["MAIL_PASSWORD"] = "flfo qnjn hokv idny"
-app.config["MAIL_DEFAULT_SENDER"] = "huiennno3@gmail.com"
+import os
+app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
+app.config["MAIL_DEFAULT_SENDER"] = os.environ.get("MAIL_USERNAME")
 
 mail = Mail(app)
 
